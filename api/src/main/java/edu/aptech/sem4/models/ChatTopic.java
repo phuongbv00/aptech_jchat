@@ -38,7 +38,7 @@ public class ChatTopic {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "topic_id")
+    @OneToMany(mappedBy = "topic")
     private List<ChatMessage> messages;
 
     private String avatar;
