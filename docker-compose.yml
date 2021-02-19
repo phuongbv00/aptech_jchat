@@ -8,6 +8,8 @@ services:
       MYSQL_ROOT_PASSWORD: root@123
     ports:
       - 3306:3306
+    volumes:
+      - ./docker/volumes/mysql:/var/lib/mysql
 
   adminer:
     image: adminer
