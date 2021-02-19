@@ -1,0 +1,12 @@
+<nb-layout-footer>
+    <input (keyup.enter)="onSent()" [(ngModel)]="message.text" nbInput fullWidth fieldSize="large" placeholder="Chat here" shape="round" />
+    <button
+        class="ms-2"
+        nbButton
+        size="large"
+        status="success"
+        shape="round"
+        (click)="onSent()" >
+        <nb-icon icon="navigation-2-outline"></nb-icon>
+    </button>
+</nb-layout-footer>

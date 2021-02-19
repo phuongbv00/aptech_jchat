@@ -1,0 +1,21 @@
+<nb-list>
+    <nb-list-item [class.active-chat]="false" *ngFor="let topic of topics" (click)="onTopicSelected(topic)">
+        <div class="d-flex align-items-center w-100">
+            <img class="avatar-img" src="{{ topic.avatar }}" alt="no image">
+            <div class="d-flex flex-column ps-2 pe-3 flex-grow-1">
+                <b>{{ topic.title }}</b>
+                <small>
+                    <b *ngIf="topic.messages.length > 0" class="text-secondary">
+                        {{ topic.messages[topic.messages.length - 1]?.from + ': ' || '' }}
+                        {{ topic.messages[topic.messages.length - 1]?.text || '' }}
+                    </b>
+                    <b *ngIf="topic.messages.length == 0" class="text-secondary">Wait for chatting</b>
+                </small>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                <small class="text-secondary">{{ topic.updatedAt }}</small>
+                <nb-badge class="position-relative mt-1" dotMode status="danger"></nb-badge>
+            </div>
+        </div>
+    </nb-list-item>
+</nb-list>

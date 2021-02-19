@@ -1,0 +1,26 @@
+<nb-layout>
+    <nb-layout-column class="d-flex p-0">
+        <div class="bg-white p-2">
+            <app-chat-profile></app-chat-profile>
+            <app-chat-list
+                (topicSelect)="onTopicSelected($event)"
+                [topics]="topics"
+            ></app-chat-list>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 ms-1">
+            <div class="bg-white border-bottom p-3 d-flex align-items-center">
+                <img class="avatar-img" src="{{ topicSelected.avatar }}" alt="no image">
+                <h5 class="ms-2 mb-0">{{ topicSelected.title }}</h5>
+            </div>
+            <app-chat-box
+                class="bg-white h-100"
+                [messages]="topicSelected.messages"
+            ></app-chat-box>
+            <app-chat-form
+                class="mt-auto"
+                (sendMessage)="onSent($event)"
+                [to]="topicSelected.id"
+            ></app-chat-form>
+        </div>
+    </nb-layout-column>    
+</nb-layout>

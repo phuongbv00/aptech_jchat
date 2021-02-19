@@ -1,0 +1,16 @@
+.avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #edf1f7;
+}
+
+.active-chat {
+    background-color: #edf1f7;
+}
+
+:host nb-list-item {
+    border-bottom: none;
+    border-top: none;
+}
