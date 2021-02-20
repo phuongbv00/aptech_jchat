@@ -8,15 +8,10 @@ import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
   styleUrls: ['./chat-form.component.scss']
 })
 export class ChatFormComponent implements OnInit {
-  message: WebsocketMessage = {
-    text: '',
-    event: EventConstant.SEND_TEXT_CHAT,
-    to: '',
-    from: 'me',
-  };
-
   @Output() sendMessage = new EventEmitter<WebsocketMessage>();
-  @Input() to: string;
+  @Input() topicId: string;
+
+  textMessage: string;
 
   constructor() { }
 
@@ -24,11 +19,16 @@ export class ChatFormComponent implements OnInit {
   }
 
   onSent(): void {
-    if (!this.message.text) {
+    if (!this.textMessage) {
       return;
     }
-    this.message.to = this.to;
-    this.sendMessage.emit(this.message);
-    this.message.text = '';
+    this.sendMessage.emit({
+      event: EventConstant.SEND_TEXT_CHAT,
+      data: new Map([
+        ['topicId', this.topicId],
+        ['text', this.textMessage],
+      ]),
+    });
+    this.textMessage = '';
   }
 }

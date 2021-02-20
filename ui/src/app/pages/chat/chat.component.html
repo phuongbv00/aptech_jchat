@@ -19,8 +19,8 @@
             <app-chat-form
                 class="mt-auto"
                 (sendMessage)="onSent($event)"
-                [to]="topicSelected.id"
+                [topicId]="topicSelected.id"
             ></app-chat-form>
         </div>
-    </nb-layout-column>    
+    </nb-layout-column>
 </nb-layout>

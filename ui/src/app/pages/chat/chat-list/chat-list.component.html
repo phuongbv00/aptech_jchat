@@ -6,7 +6,7 @@
                 <b>{{ topic.title }}</b>
                 <small>
                     <b *ngIf="topic.messages.length > 0" class="text-secondary">
-                        {{ topic.messages[topic.messages.length - 1]?.from + ': ' || '' }}
+                        {{ topic.messages[topic.messages.length - 1]?.createdBy + ': ' || '' }}
                         {{ topic.messages[topic.messages.length - 1]?.text || '' }}
                     </b>
                     <b *ngIf="topic.messages.length == 0" class="text-secondary">Wait for chatting</b>

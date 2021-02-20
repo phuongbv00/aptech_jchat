@@ -6,6 +6,8 @@ import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message, StompHeaders } from '@stomp/stompjs';
 import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
+import {ChatService} from '../../shared/services/chat.service';
+import {EventConstant} from '../../shared/constants/event.constant';
 
 @Component({
   selector: 'app-chat',
@@ -13,76 +15,44 @@ import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  topics: ChatTopic[] = [
-    {
-      id: '1',
-      title: 'Abc',
-      updatedBy: {
-        email: '',
-        fullName: 'A',
-        id: 999,
-        status: 1,
-      },
-      createdBy: {
-        email: '',
-        fullName: 'A',
-        id: 999,
-        status: 1,
-      },
-      participants: [],
-      updatedAt: '1 mins',
-      messages: [],
-      avatar: 'https://cdn1.tuoitre.vn/zoom/600_315/2020/2/16/dscf9323-15818618595722127173381-crop-15818630577631485418054.jpg',
-    },
-    {
-      id: '2',
-      title: 'Def',
-      updatedBy: {
-        email: '',
-        fullName: 'A',
-        id: 999,
-        status: 1,
-      },
-      createdBy: {
-        email: '',
-        fullName: 'A',
-        id: 999,
-        status: 1,
-      },
-      participants: [],
-      updatedAt: '1 mins',
-      messages: [],
-      avatar: 'https://cdn1.tuoitre.vn/zoom/600_315/2020/2/16/dscf9323-15818618595722127173381-crop-15818630577631485418054.jpg',
-    },
-  ];
-  topicSelected: ChatTopic = this.topics[0];
+  topics: ChatTopic[] = [];
+  topicSelected: ChatTopic;
 
-  private publicChatTopicSub: Subscription;
+  // subscriptions
+  private sendTextChatSub: Subscription;
+  private getChatTopicsSub: Subscription;
 
-  constructor(private rxStompService: RxStompService) { }
+  constructor(private rxStompService: RxStompService,
+              private chatService: ChatService) {
+    this.sendTextChatSub = this.rxStompService
+      .watch(`${TopicConstant.SEND_TEXT_CHAT}/{id}`)
+      .subscribe((message: Message) => this.onTextChatReceived(JSON.parse(message.body)));
+    this.getChatTopicsSub = this.rxStompService
+      .watch(`${TopicConstant.GET_CHAT_TOPICS}/{myId}`)
+      .subscribe((message: Message) => this.onGetMyTopics(JSON.parse(message.body)));
+  }
 
   ngOnInit(): void {
-    this.publicChatTopicSub = this.rxStompService
-      .watch(`${TopicConstant.SEND_TEXT_CHAT}/{id}`)
-      .subscribe((message: Message) => this.onReceived(JSON.parse(message.body)));
-  }
-
-  ngOnDestroy(): void {
-    this.publicChatTopicSub.unsubscribe();
-  }
-
-  onSent(mess: WebsocketMessage): void {
-    const headers: StompHeaders = {
-      token: JSON.parse(localStorage.getItem('auth_app_token')).value,
-    };
-    this.rxStompService.publish({
-      destination: '/app/index',
-      body: JSON.stringify(mess),
-      headers,
+    this.chatService.send({
+      event: EventConstant.GET_USERS,
+      data: new Map([
+        ['page', '1'],
+        ['limit', '5'],
+        ['keyword', ''],
+      ]),
     });
   }
 
-  onReceived(mess: ChatMessage): void {
+  ngOnDestroy(): void {
+    this.sendTextChatSub.unsubscribe();
+    this.getChatTopicsSub.unsubscribe();
+  }
+
+  onSent(mess: WebsocketMessage): void {
+    this.chatService.send(mess);
+  }
+
+  onTextChatReceived(mess: ChatMessage): void {
     this.topics.forEach(topic => {
       if (topic.id === mess.topic.id) {
         topic.messages.push(mess);
@@ -92,5 +62,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onTopicSelected(topic: ChatTopic): void {
     this.topicSelected = topic;
+  }
+
+  onGetMyTopics(topics: ChatTopic[]): void {
+    this.topics = topics;
+    this.onTopicSelected(topics[0]);
   }
 }
