@@ -1,5 +1,7 @@
 package edu.aptech.sem4.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.aptech.sem4.constants.TopicConstant;
 import edu.aptech.sem4.dto.WebsocketMessage;
 import edu.aptech.sem4.models.ChatMessage;
@@ -24,6 +26,9 @@ public class ChatServiceImpl implements ChatService {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private ChatTopicRepository chatTopicRepository;
 
     @Autowired
@@ -42,11 +47,11 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void handleSendTextChatMessage(WebsocketMessage websocketMessage) {
         var topic = ChatTopic.builder()
-                .id(Long.valueOf(websocketMessage.getData().get("topicId").toString()))
+                .id(Long.valueOf(websocketMessage.getData().get("topicId")))
                 .build();
         var chatMess = chatMessageRepository.save(ChatMessage.builder()
                 .createdBy(websocketMessage.getFrom())
-                .text(websocketMessage.getData().get("text").toString())
+                .text(websocketMessage.getData().get("text"))
                 .topic(topic)
                 .build());
         send(TopicConstant.SEND_TEXT_CHAT, topic.getId().toString(), chatMess);
@@ -54,30 +59,35 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void handleGetChatTopicsMessage(WebsocketMessage websocketMessage) {
-        var data = chatTopicRepository
+        var topics = chatTopicRepository
                 .findChatTopicByParticipantsContainsOrderByUpdatedAtDesc(websocketMessage.getFrom());
-        send(TopicConstant.GET_CHAT_TOPICS, websocketMessage.getFrom().getId().toString(), data);
+        send(TopicConstant.GET_CHAT_TOPICS, websocketMessage.getFrom().getId().toString(), topics);
     }
 
     @Override
     public void handleCreateChatTopicMessage(WebsocketMessage websocketMessage) {
-        var topic = (ChatTopic) websocketMessage.getData().get("topic");
-        topic.setCreatedAt(LocalDateTime.now());
-        topic.setUpdatedAt(LocalDateTime.now());
-        topic.setCreatedBy(websocketMessage.getFrom());
-        topic.setUpdatedBy(websocketMessage.getFrom());
-        topic = chatTopicRepository.save(topic);
-        for (var participant : topic.getParticipants()) {
-            send(TopicConstant.CREATE_CHAT_TOPIC, participant.getId().toString(), topic);
+        try {
+            var topic = objectMapper
+                    .readValue(websocketMessage.getData().get("topic"), ChatTopic.class);
+            topic.setCreatedAt(LocalDateTime.now());
+            topic.setUpdatedAt(LocalDateTime.now());
+            topic.setCreatedBy(websocketMessage.getFrom());
+            topic.setUpdatedBy(websocketMessage.getFrom());
+            topic = chatTopicRepository.save(topic);
+            for (var participant : topic.getParticipants()) {
+                send(TopicConstant.CREATE_CHAT_TOPIC, participant.getId().toString(), topic);
+            }
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
         }
     }
 
     @Override
     public void handleGetUsersMessage(WebsocketMessage websocketMessage) {
         var data = websocketMessage.getData();
-        var keyword = String.valueOf(data.get("keyword"));
-        var page = Integer.valueOf(String.valueOf(data.get("page")));
-        var limit = Integer.valueOf(String.valueOf(data.get("limit")));
+        var keyword = data.get("keyword");
+        var page = Integer.valueOf(data.get("page"));
+        var limit = Integer.valueOf(data.get("limit"));
         Page<User> users = userRepository.findAllByFullNameLike(keyword, PageRequest.of(page, limit));
         send(TopicConstant.CREATE_CHAT_TOPIC, websocketMessage.getFrom().getId().toString(), users);
     }

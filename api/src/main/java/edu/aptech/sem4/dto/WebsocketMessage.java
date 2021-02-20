@@ -13,5 +13,5 @@ import java.util.Map;
 public class WebsocketMessage {
     private String event;
     private User from;
-    private Map<String, Object> data;
+    private Map<String, String> data;
 }
