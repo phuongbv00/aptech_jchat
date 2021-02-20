@@ -23,6 +23,7 @@ public class WebSocketController {
     @MessageMapping("/index")
     public void index(@Payload WebsocketMessage msg, @Header(name = "token") String token) {
         msg.setFrom(jwtProvider.getCredentials(token));
+        log.info("RECEIVED MESSAGE: " + msg.toString());
         switch (msg.getEvent()) {
             case EventConstant.SEND_TEXT_CHAT:
                 chatService.handleSendTextChatMessage(msg);

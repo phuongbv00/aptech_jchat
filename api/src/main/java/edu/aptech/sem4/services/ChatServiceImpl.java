@@ -8,6 +8,7 @@ import edu.aptech.sem4.models.User;
 import edu.aptech.sem4.repositories.ChatMessageRepository;
 import edu.aptech.sem4.repositories.ChatTopicRepository;
 import edu.aptech.sem4.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 public class ChatServiceImpl implements ChatService {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -34,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     public void send(String baseTopic, String endpoint, Object data) {
         var dest = baseTopic + "/" + endpoint;
         simpMessagingTemplate.convertAndSend(dest, data);
+        log.info("SENT MESSAGE: destination=" + dest + ", data=" + data.toString());
     }
 
     @Override
