@@ -16,7 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     request = request.clone({
       headers: new HttpHeaders({
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('auth_app_token')).value}`,
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('auth_app_token'))?.value}`,
         'Access-Control-Allow-Origin': '*',
       }),
     });
