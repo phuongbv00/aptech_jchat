@@ -27,9 +27,14 @@ public class WebSocketController {
             case EventConstant.SEND_TEXT_CHAT:
                 chatService.handleSendTextChatMessage(msg);
                 break;
-            case EventConstant.JOIN_CHAT:
+            case EventConstant.GET_CHAT_TOPICS:
+                chatService.handleGetChatTopicsMessage(msg);
                 break;
-            case EventConstant.LEAVE_CHAT:
+            case EventConstant.CREATE_CHAT_TOPIC:
+                chatService.handleCreateChatTopicMessage(msg);
+                break;
+            case EventConstant.GET_USERS:
+                chatService.handleGetUsersMessage(msg);
                 break;
             default:
                 break;

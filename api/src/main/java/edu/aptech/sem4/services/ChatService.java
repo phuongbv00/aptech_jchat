@@ -3,5 +3,9 @@ package edu.aptech.sem4.services;
 import edu.aptech.sem4.dto.WebsocketMessage;
 
 public interface ChatService {
+    void send(String topic, String endpoint, Object data);
     void handleSendTextChatMessage(WebsocketMessage websocketMessage);
+    void handleGetChatTopicsMessage(WebsocketMessage websocketMessage);
+    void handleCreateChatTopicMessage(WebsocketMessage websocketMessage);
+    void handleGetUsersMessage(WebsocketMessage websocketMessage);
 }

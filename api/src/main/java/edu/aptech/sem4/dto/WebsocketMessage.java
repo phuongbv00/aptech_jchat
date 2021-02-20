@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Data
 @Builder
 @ToString
 public class WebsocketMessage {
-    private String text;
     private String event;
-    private String to;
     private User from;
+    private Map<String, Object> data;
 }
