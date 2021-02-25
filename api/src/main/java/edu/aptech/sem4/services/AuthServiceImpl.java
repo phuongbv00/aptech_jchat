@@ -51,6 +51,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Object register(AuthRegisterParams params) {
         try {
+            if (!params.isTerms())
+                throw new Exception("Term not checked");
             if (!params.getConfirmPassword().equals(params.getPassword()))
                 throw new Exception("Password != Confirm password");
 

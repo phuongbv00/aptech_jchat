@@ -41,7 +41,7 @@ public class ChatServiceImpl implements ChatService {
     public void send(String baseTopic, String endpoint, Object data) {
         var dest = baseTopic + "/" + endpoint;
         simpMessagingTemplate.convertAndSend(dest, data);
-        log.info("SENT MESSAGE: destination=" + dest + ", data=" + data.toString());
+        log.info("SENT MESSAGE: destination=" + dest);
     }
 
     @Override
@@ -69,6 +69,7 @@ public class ChatServiceImpl implements ChatService {
         try {
             var topic = objectMapper
                     .readValue(websocketMessage.getData().get("topic"), ChatTopic.class);
+            topic.getParticipants().add(websocketMessage.getFrom());
             topic.setCreatedAt(LocalDateTime.now());
             topic.setUpdatedAt(LocalDateTime.now());
             topic.setCreatedBy(websocketMessage.getFrom());
@@ -88,7 +89,11 @@ public class ChatServiceImpl implements ChatService {
         var keyword = data.get("keyword");
         var page = Integer.valueOf(data.get("page"));
         var limit = Integer.valueOf(data.get("limit"));
-        Page<User> users = userRepository.findAllByFullNameLike(keyword, PageRequest.of(page, limit));
-        send(TopicConstant.CREATE_CHAT_TOPIC, websocketMessage.getFrom().getId().toString(), users);
+        var users = userRepository.findAllByFullNameContainsAndIdIsNot(
+                keyword,
+                websocketMessage.getFrom().getId(),
+                PageRequest.of(page, limit)
+        );
+        send(TopicConstant.GET_USERS, websocketMessage.getFrom().getId().toString(), users);
     }
 }

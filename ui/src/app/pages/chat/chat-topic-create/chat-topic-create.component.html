@@ -1,0 +1,31 @@
+<nb-card>
+  <nb-card-header>Create Chat Topic</nb-card-header>
+  <nb-card-body>
+    <nb-tabset fullWidth>
+      <nb-tab class="px-0" tabTitle="Person" tabIcon="person-outline">
+        <div class="search">
+          <nb-icon icon="search-outline"></nb-icon>
+          <input #searchInputOnPersonTab
+                 class="search-input"
+                 (keyup)="searchUserOnPersonTab(searchInputOnPersonTab.value)">
+        </div>
+        <nb-list nbInfiniteList [threshold]="500" class="mt-3">
+          <nb-list-item
+            *ngFor="let u of users?.content, let i = index"
+            [class.user-selected]="highlightStatus[i]"
+            class="border-0"
+            (click)="selectUserToCreatePersonTopic(u)">
+            {{u.fullName}}
+          </nb-list-item>
+        </nb-list>
+      </nb-tab>
+      <nb-tab class="px-0" tabTitle="Group" tabIcon="people-outline">
+
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton (click)="close.emit()" status="danger">Close</button>
+    <button nbButton (click)="createTopic()" status="success" class="ms-3">Create Topic</button>
+  </nb-card-footer>
+</nb-card>

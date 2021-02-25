@@ -5,15 +5,14 @@
             <div class="d-flex flex-column ps-2 pe-3 flex-grow-1">
                 <b>{{ topic.title }}</b>
                 <small>
-                    <b *ngIf="topic.messages.length > 0" class="text-secondary">
-                        {{ topic.messages[topic.messages.length - 1]?.createdBy + ': ' || '' }}
-                        {{ topic.messages[topic.messages.length - 1]?.text || '' }}
+                    <b class="text-secondary">
+                      {{ topic.updatedBy.fullName + ': ' }}
+                      {{ topic.lastMessage || 'has created topic' }}
                     </b>
-                    <b *ngIf="topic.messages.length == 0" class="text-secondary">Wait for chatting</b>
                 </small>
             </div>
             <div class="d-flex flex-column align-items-center">
-                <small class="text-secondary">{{ topic.updatedAt }}</small>
+                <small class="text-secondary">{{ topic.updatedAt | localDatetime | agoDatetime }}</small>
                 <nb-badge class="position-relative mt-1" dotMode status="danger"></nb-badge>
             </div>
         </div>

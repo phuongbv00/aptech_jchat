@@ -26,4 +26,6 @@ public class User {
     private String fullName;
 
     private Integer status = 1;
+
+    private String avatar;
 }

@@ -1,0 +1,29 @@
+@import "src/themes";
+
+.search {
+  position: relative;
+
+  .search-input {
+    width: 100%;
+    border: none;
+    background-color: #edf0f5;
+    padding: 1rem 1rem 1rem 3rem;
+    line-height: 1.5;
+    border-radius: .3rem;
+  }
+
+  nb-icon {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    color: #a6aebd;
+  }
+}
+
+.user-selected {
+  background: nb-theme(color-primary-400);
+  color: white;
+  font-weight: bold;
+  border-radius: .3rem;
+}
+

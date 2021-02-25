@@ -1,5 +1,6 @@
 package edu.aptech.sem4.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,12 +27,11 @@ public class ChatTopic {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "topics_participants",
             joinColumns = @JoinColumn(name = "topic_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @ToString.Exclude
     private List<User> participants;
 
     private LocalDateTime createdAt;
@@ -39,9 +39,12 @@ public class ChatTopic {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "topic")
+    @JsonIgnore
     private List<ChatMessage> messages;
 
     private String avatar;
 
     private String title;
+
+    private String lastMessage;
 }

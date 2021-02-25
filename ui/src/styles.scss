@@ -7,3 +7,8 @@
   // @include nb-auth-global();
 };
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/scss/bootstrap";
+
+:focus {
+  outline: none;
+}
