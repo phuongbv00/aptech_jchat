@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {RxStompService} from '@stomp/ng2-stompjs';
 import {WebsocketMessage} from '../dto/websocket-message.dto';
-import {Message} from '@stomp/stompjs';
+import {ChatTopic} from '../models/chat-topic.model';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +39,24 @@ export class ChatService {
       }
     }
     return value;
+  }
+
+  refactorChatTopic(topic: ChatTopic, myId: number): ChatTopic {
+    const isGroup = topic.participants.length > 2;
+    if (isGroup) {
+      return {
+        ...topic,
+        avatar: topic.avatar ?? 'assets/group-default.png',
+        messages: topic.messages ?? [],
+      };
+    }
+    const opponent = topic.participants
+      .find(u => u.id !== myId);
+    return {
+      ...topic,
+      avatar: opponent.avatar ?? 'assets/user-default.png',
+      title: opponent.fullName,
+      messages: topic.messages ?? [],
+    };
   }
 }

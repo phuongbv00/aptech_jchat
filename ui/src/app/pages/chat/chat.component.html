@@ -1,13 +1,16 @@
 <nb-layout>
   <nb-layout-column class="d-flex p-0">
     <div class="bg-white p-2">
-      <app-chat-profile></app-chat-profile>
+      <app-chat-profile
+        (openCreateDialog)="dialogService.open(createTopicDialog)"
+      ></app-chat-profile>
       <app-chat-list
         (topicSelect)="onTopicSelected($event)"
         [topics]="topics"
+        [topicSelected]="topicSelected"
       ></app-chat-list>
     </div>
-    <div *ngIf="topicSelected" class="d-flex flex-column flex-grow-1 ms-1">
+    <div *ngIf="topicSelected" class="d-flex flex-column flex-grow-1 border-start">
       <div class="bg-white border-bottom p-3 d-flex align-items-center">
         <img class="avatar-img" src="{{ topicSelected.avatar }}" alt="no image">
         <h5 class="ms-2 mb-0">{{ topicSelected.title }}</h5>
@@ -30,7 +33,7 @@
 
 <ng-template #createTopicDialog let-ref="dialogRef">
   <app-chat-topic-create
-    (close)="ref.close()"
+    (closeDialog)="ref.close()"
     [users]="searchedUsers"
   ></app-chat-topic-create>
 </ng-template>

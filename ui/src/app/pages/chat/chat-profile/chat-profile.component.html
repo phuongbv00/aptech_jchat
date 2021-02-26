@@ -1,1 +1,10 @@
-<p>chat-profile works!</p>
+<div class="pb-2 d-flex align-items-center">
+  <img class="avatar" src="{{profile.avatar}}">
+  <b class="ms-2">{{profile.fullName}}</b>
+  <button class="ms-auto" nbButton status="danger" size="small" shape="round">
+    <nb-icon icon="edit-outline"></nb-icon>
+  </button>
+  <button class="ms-2" nbButton status="success" size="small" shape="round" (click)="openCreateDialog.emit()">
+    <nb-icon icon="plus-outline"></nb-icon>
+  </button>
+</div>

@@ -8,6 +8,8 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class ChatListComponent implements OnInit {
   @Input() topics: ChatTopic[];
+  @Input()topicSelected: ChatTopic;
+
   @Output() topicSelect = new EventEmitter<ChatTopic>();
 
   constructor() { }
@@ -16,6 +18,7 @@ export class ChatListComponent implements OnInit {
   }
 
   onTopicSelected(topic: ChatTopic): void {
+    this.topicSelected = topic;
     this.topicSelect.emit(topic);
   }
 }

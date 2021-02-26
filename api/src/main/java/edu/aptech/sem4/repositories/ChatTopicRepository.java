@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ChatTopicRepository extends JpaRepository<ChatTopic, Long> {
-    List<ChatTopic> findChatTopicByParticipantsContainsOrderByUpdatedAtDesc(User participant);
+    List<ChatTopic> findByParticipantsContainsOrderByUpdatedAtDesc(User participant);
+    List<ChatTopic> findByParticipantsId(Long uid);
 }

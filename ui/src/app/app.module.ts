@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { myRxStompConfig } from './shared/configs/rx-stomp.config';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {NbThemeModule, NbLayoutModule, NbSidebarModule, NbDialogModule} from '@nebular/theme';
+import {NbThemeModule, NbLayoutModule, NbSidebarModule, NbDialogModule, NbToastrModule} from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NbAuthModule } from '@nebular/auth';
@@ -28,6 +28,7 @@ import { AuthInterceptor } from './shared/http/auth.interceptor';
     HttpClientModule,
     NbAuthModule.forRoot(authConfig),
     NbDialogModule.forRoot(),
+    NbToastrModule.forRoot(),
   ],
   providers: [
     {

@@ -11,7 +11,7 @@ import {User} from '../../../shared/models/user.model';
   styleUrls: ['./chat-topic-create.component.scss']
 })
 export class ChatTopicCreateComponent implements OnInit {
-  @Output() close = new EventEmitter<any>();
+  @Output() closeDialog = new EventEmitter<any>();
   @Input() users: Pageable<User>;
 
   timer: any;
@@ -33,6 +33,7 @@ export class ChatTopicCreateComponent implements OnInit {
         ['topic', JSON.stringify(this.topic)],
       ]),
     });
+    this.closeDialog.emit();
   }
 
   searchUsers(page: number = 0, keyword: string = ''): void {
@@ -48,7 +49,10 @@ export class ChatTopicCreateComponent implements OnInit {
 
   searchUserOnPersonTab(keyword: string): void {
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.searchUsers(0, keyword), 500);
+    this.timer = setTimeout(() => {
+      this.searchUsers(0, keyword);
+      this.resetUsersSelected();
+    }, 500);
   }
 
   selectUserToCreatePersonTopic(user: User): void {
