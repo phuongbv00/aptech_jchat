@@ -11,7 +11,7 @@
           <small>
             <b class="text-secondary">
               {{ topic.updatedBy.fullName + ': ' }}
-              {{ topic.lastMessage || 'has created topic' }}
+              {{ topic.lastMessage || 'has created topic' | textTruncate: [10, '...'] }}
             </b>
           </small>
         </div>

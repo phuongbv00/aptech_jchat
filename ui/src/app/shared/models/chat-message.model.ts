@@ -5,4 +5,5 @@ export class ChatMessage {
     text: string;
     topic: ChatTopic;
     createdBy: User;
+    createdAt: number[];
 }

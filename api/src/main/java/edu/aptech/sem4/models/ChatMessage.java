@@ -3,6 +3,7 @@ package edu.aptech.sem4.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_messages")
@@ -25,4 +26,6 @@ public class ChatMessage {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    private LocalDateTime createdAt;
 }

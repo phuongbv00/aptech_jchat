@@ -12,3 +12,17 @@
 :focus {
   outline: none;
 }
+
+::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background:  nb-theme(background-basic-color-4);
+  cursor: pointer;
+  border-radius: 0.4rem;
+}
+
+::-webkit-scrollbar-track {
+  background: nb-theme(background-basic-color-2);
+}

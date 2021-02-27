@@ -30,6 +30,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private getChatTopicsSub: Subscription;
   private getUsersSub: Subscription;
   private createChatTopicSub: Subscription;
+  private getChatHistorySub: Subscription;
 
   constructor(private rxStompService: RxStompService,
               private chatService: ChatService,
@@ -56,6 +57,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.createChatTopicSub = this.rxStompService
       .watch(`${TopicConstant.CREATE_CHAT_TOPIC}/${this.authService.getCredentials().id}`)
       .subscribe((message: Message) => this.handleCreateChatTopicSub(JSON.parse(message.body)));
+    this.getChatHistorySub = this.rxStompService
+      .watch(`${TopicConstant.GET_CHAT_HISTORY}/${this.authService.getCredentials().id}`)
+      .subscribe((message: Message) => this.handleGetChatHistorySub(JSON.parse(message.body)));
   }
 
   ngOnInit(): void {
@@ -66,10 +70,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // unsubscribe subscriptions
+    this.exceptionSub.unsubscribe();
     this.sendTextChatSub.unsubscribe();
     this.getChatTopicsSub.unsubscribe();
     this.getUsersSub.unsubscribe();
     this.createChatTopicSub.unsubscribe();
+    this.getChatHistorySub.unsubscribe();
   }
 
   // handle subscriptions
@@ -108,6 +114,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log(topic);
   }
 
+  handleGetChatHistorySub(messList: ChatMessage[]): void {
+    console.log(messList);
+    this.topicSelected.messages.unshift(...messList);
+  }
+
   // normal func
   sentChat(mess: WebsocketMessage): void {
     this.chatService.send(mess);
@@ -115,6 +126,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onTopicSelected(topic: ChatTopic): void {
     this.topicSelected = topic;
+    const data = new Map([
+      ['topicId', this.topicSelected.id],
+    ]);
+    if (this.topicSelected.messages.length > 50) {
+      return;
+    } else if (this.topicSelected.messages.length > 0) {
+      data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
+    }
+    this.chatService.send({
+      event: EventConstant.GET_CHAT_HISTORY,
+      data,
+    });
   }
 
   arrayMove(arr, fromIndex, toIndex): void {

@@ -16,6 +16,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,7 @@ public class ChatServiceImpl implements ChatService {
             topic = chatTopicRepository.save(topic);
             var chatMess = chatMessageRepository.save(ChatMessage.builder()
                     .createdBy(websocketMessage.getFrom())
+                    .createdAt(LocalDateTime.now())
                     .text(websocketMessage.getData().get("text"))
                     .topic(topic)
                     .build());
@@ -142,5 +144,21 @@ public class ChatServiceImpl implements ChatService {
                 PageRequest.of(page, limit)
         );
         send(TopicConstant.GET_USERS, websocketMessage.getFrom().getId().toString(), users);
+    }
+
+    @Override
+    public void handleGetChatHistory(WebsocketMessage websocketMessage) {
+        var data = websocketMessage.getData();
+        var topic = ChatTopic.builder().id(Long.valueOf(data.get("topicId"))).build();
+        var beforeMessageId = data.containsKey("beforeMessageId")
+                ? Long.valueOf(data.get("beforeMessageId"))
+                : null;
+        var history = beforeMessageId != null
+                ? chatMessageRepository.findByTopicAndIdLessThanOrderByCreatedAtDesc(topic, beforeMessageId, PageRequest.of(0, 100))
+                : chatMessageRepository.findByTopicOrderByCreatedAtDesc(topic, PageRequest.of(0, 100));
+        history = history.stream()
+                .sorted(Comparator.comparing(ChatMessage::getCreatedAt))
+                .collect(Collectors.toList());
+        send(TopicConstant.GET_CHAT_HISTORY, websocketMessage.getFrom().getId().toString(), history);
     }
 }
