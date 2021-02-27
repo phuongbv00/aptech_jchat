@@ -9,9 +9,10 @@
         class="avatar-container"
         *ngIf="!isMyChat(msg)"
         [style.visibility]="isFirstMessageInAnUserBatch(msg, i) ? 'visible' : 'hidden'">
-        <img
-          class="avatar"
-          src="{{msg.createdBy.avatar || 'assets/user-default.png'}}">
+        <app-avatar
+          size="36px"
+          [src]="msg.createdBy.avatar"
+        ></app-avatar>
         <small class="username">{{msg.createdBy.fullName}}</small>
       </div>
       <div

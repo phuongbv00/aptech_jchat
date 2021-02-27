@@ -14,18 +14,12 @@
       margin-top: -1.1rem;
       align-self: baseline;
       position: relative;
-
-      .avatar {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 0.3rem;
-      }
+      margin-right: 0.3rem;
 
       .username {
         position: absolute;
-        top: -1px;
+        top: -0.125rem;
+        left: 2.5rem;
         color: nb-theme(color-basic-600);
         width: max-content;
       }

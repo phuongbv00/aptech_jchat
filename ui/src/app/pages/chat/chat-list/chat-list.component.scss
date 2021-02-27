@@ -1,15 +1,12 @@
 @import "src/themes";
 
-.avatar-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #edf1f7;
-}
+.chat-list-container {
+  max-height: 80vh;
+  overflow-y: auto;
 
-.active-chat {
+  .active-chat {
     background-color: nb-theme(color-primary-200);
+  }
 }
 
 :host nb-list-item {

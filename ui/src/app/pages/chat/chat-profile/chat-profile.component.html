@@ -1,8 +1,11 @@
 <div class="pt-2 ps-2 pb-3 d-flex align-items-center">
-  <img class="avatar" src="{{profile.avatar}}">
+  <app-avatar
+    [src]="profile.avatar"
+    size="36px"
+  ></app-avatar>
   <b class="ms-2">{{profile.fullName}}</b>
   <div class="ms-auto">
-    <button class="ms-3" nbButton status="danger" size="small" shape="round">
+    <button class="ms-3" nbButton status="warning" size="small" shape="round">
       <nb-icon icon="edit-outline"></nb-icon>
     </button>
     <button class="ms-2" nbButton status="success" size="small" shape="round" (click)="openCreateDialog.emit()">

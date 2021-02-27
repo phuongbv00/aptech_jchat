@@ -1,0 +1,11 @@
+<img
+  *ngIf="src"
+  [style]="styleImg"
+  src="{{src}}">
+<div
+  *ngIf="!src"
+  [style]="styleIcon"
+  class="icon-container d-flex justify-content-center align-items-center">
+  <nb-icon icon="{{icon}}"></nb-icon>
+</div>
+

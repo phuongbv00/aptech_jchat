@@ -1,11 +1,15 @@
-<nb-list>
-  <nb-list-item
-    [class.active-chat]="topic == topicSelected"
-    *ngFor="let topic of topics"
-    (click)="onTopicSelected(topic)"
-    [style.border-radius]="'0.5rem'">
+<div class="chat-list-container">
+  <nb-list>
+    <nb-list-item
+      [class.active-chat]="topic == topicSelected"
+      *ngFor="let topic of topics"
+      (click)="onTopicSelected(topic)"
+      [style.border-radius]="'0.5rem'">
       <div class="d-flex align-items-center w-100">
-        <img class="avatar-img" src="{{ topic.avatar }}" alt="no image">
+        <app-avatar
+          [src]="topic.avatar"
+          [isGroup]="topic.participants.length > 2"
+          size="50px"></app-avatar>
         <div class="d-flex flex-column ps-2 pe-3 flex-grow-1">
           <b>{{ topic.title }}</b>
           <small>
@@ -20,5 +24,7 @@
           <nb-badge class="position-relative mt-1" dotMode status="success"></nb-badge>
         </div>
       </div>
-  </nb-list-item>
-</nb-list>
+    </nb-list-item>
+  </nb-list>
+</div>
+

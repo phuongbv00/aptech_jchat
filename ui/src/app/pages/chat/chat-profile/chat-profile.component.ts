@@ -14,11 +14,7 @@ export class ChatProfileComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    const cre = this.authService.getCredentials();
-    this.profile = {
-      ...cre,
-      avatar: cre.avatar ?? 'assets/user-default.png',
-    };
+    this.profile = this.authService.getCredentials();
   }
 
 }

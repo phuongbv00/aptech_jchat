@@ -43,20 +43,14 @@ export class ChatService {
 
   refactorChatTopic(topic: ChatTopic, myId: number): ChatTopic {
     const isGroup = topic.participants.length > 2;
-    if (isGroup) {
-      return {
-        ...topic,
-        avatar: topic.avatar ?? 'assets/group-default.png',
-        messages: topic.messages ?? [],
-      };
-    }
-    const opponent = topic.participants
-      .find(u => u.id !== myId);
-    return {
+    const rs = {
       ...topic,
-      avatar: opponent.avatar ?? 'assets/user-default.png',
-      title: opponent.fullName,
       messages: topic.messages ?? [],
     };
+    if (!isGroup) {
+      const opponent = topic.participants.find(u => u.id !== myId);
+      rs.title = opponent.fullName;
+    }
+    return rs;
   }
 }

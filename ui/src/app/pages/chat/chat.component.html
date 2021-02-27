@@ -1,6 +1,6 @@
 <nb-layout>
   <nb-layout-column class="d-flex p-0">
-    <div class="bg-white p-2">
+    <div class="bg-white p-2 d-flex flex-column">
       <app-chat-profile
         (openCreateDialog)="dialogService.open(createTopicDialog)"
       ></app-chat-profile>
@@ -9,10 +9,18 @@
         [topics]="topics"
         [topicSelected]="topicSelected"
       ></app-chat-list>
+      <div class="mt-auto pt-2 d-flex border-top">
+        <button class="ms-auto" nbButton size="small" shape="round" status="danger">
+          <nb-icon icon="log-out-outline"></nb-icon>
+        </button>
+      </div>
     </div>
     <div *ngIf="topicSelected" class="d-flex flex-column flex-grow-1 border-start">
       <div class="bg-white border-bottom p-3 d-flex align-items-center">
-        <img class="avatar-img" src="{{ topicSelected.avatar }}" alt="no image">
+        <app-avatar
+          size="50px"
+          [src]="topicSelected.avatar"
+          [isGroup]="topicSelected.participants.length > 2"></app-avatar>
         <h5 class="ms-2 mb-0">{{ topicSelected.title }}</h5>
       </div>
       <app-chat-box

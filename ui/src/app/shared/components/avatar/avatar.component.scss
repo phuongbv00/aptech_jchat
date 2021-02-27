@@ -1,0 +1,15 @@
+@import "src/themes";
+
+img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.icon-container {
+  background-color: nb-theme(color-basic-500);
+  nb-icon {
+    color: white;
+    width: 60%;
+    height: 60%;
+  }
+}
