@@ -1,31 +1,90 @@
 <nb-card>
   <nb-card-header>Create Chat Topic</nb-card-header>
   <nb-card-body>
-    <nb-tabset fullWidth (changeTab)="resetUsersSelected()">
+    <nb-tabset fullWidth (changeTab)="changeTab($event)">
+<!--      PERSON TAB-->
       <nb-tab class="px-0" tabTitle="Person" tabIcon="person-outline">
         <div class="search">
           <nb-icon icon="search-outline"></nb-icon>
-          <input #searchInputOnPersonTab
-                 class="search-input"
-                 (keyup)="searchUserOnPersonTab(searchInputOnPersonTab.value)">
+          <input
+            #searchInputOnPersonTab
+            class="search-input"
+            placeholder="Search..."
+            (keyup)="searchUsersOnPersonTab(searchInputOnPersonTab.value)">
         </div>
-        <nb-list nbInfiniteList [threshold]="500" class="mt-3">
+        <nb-list class="mt-3">
           <nb-list-item
-            *ngFor="let u of users?.content, let i = index"
-            [class.user-selected]="highlightStatus[i]"
+            *ngFor="let u of users?.content"
+            [class.user-selected]="highlightStatus.get(u.id)"
             class="border-0"
             (click)="selectUserToCreatePersonTopic(u)">
+            <app-avatar
+              class="me-3"
+              size="36px"
+              [src]="u.avatar"
+            ></app-avatar>
             {{u.fullName}}
           </nb-list-item>
         </nb-list>
       </nb-tab>
+<!--      GROUP TAB-->
       <nb-tab class="px-0" tabTitle="Group" tabIcon="people-outline">
-
+        <div class="d-flex gap-3">
+          <div>
+            <div class="search">
+              <nb-icon icon="search-outline"></nb-icon>
+              <input
+                #searchInputOnGroupTab
+                class="search-input"
+                placeholder="Search..."
+                (keyup)="searchUsersOnGroupTab(searchInputOnGroupTab.value)">
+            </div>
+            <nb-list class="mt-2">
+              <nb-list-item
+                *ngFor="let u of users?.content"
+                [class.user-selected]="highlightStatus.get(u.id)"
+                class="border-0 mt-1"
+                (click)="selectUserToCreateGroupTopic(u)">
+                <app-avatar
+                  class="me-3"
+                  size="36px"
+                  [src]="u.avatar"
+                ></app-avatar>
+                {{u.fullName}}
+              </nb-list-item>
+            </nb-list>
+          </div>
+          <div>
+            <input [(ngModel)]="topic.title" nbInput fullWidth fieldSize="large" placeholder="Group Name">
+            <div
+              *ngIf="topic.participants.length > 0"
+              class="d-flex flex-wrap gap-2 pt-2">
+              <div
+                class="participant d-flex flex-column flex-wrap position-relative"
+                *ngFor="let p of topic.participants">
+                <app-avatar
+                  [src]="p.avatar"
+                  size="50px"></app-avatar>
+                <small class="text-center">{{p.fullName}}</small>
+                <nb-icon
+                  class="position-absolute bg-white"
+                  style="top: 0; right: 0; border-radius: 50%"
+                  icon="close-outline"
+                  (click)="selectUserToCreateGroupTopic(p)"></nb-icon>
+              </div>
+            </div>
+          </div>
+        </div>
       </nb-tab>
     </nb-tabset>
   </nb-card-body>
   <nb-card-footer class="d-flex justify-content-end">
     <button nbButton (click)="closeDialog.emit()" status="danger">Close</button>
-    <button nbButton [disabled]="topic.participants.length == 0" (click)="createTopic()" status="success" class="ms-3">Create Topic</button>
+    <button
+      nbButton
+      [disabled]="!isValidTopic()"
+      (click)="createTopic(isOnGroupTab)"
+      status="success"
+      class="ms-3">Create Topic</button>
   </nb-card-footer>
 </nb-card>

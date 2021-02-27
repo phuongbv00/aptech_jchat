@@ -94,13 +94,15 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void handleCreateChatTopicMessage(WebsocketMessage websocketMessage) {
         try {
+            var data = websocketMessage.getData();
+            var isGroup = Boolean.valueOf(data.get("isGroup"));
             var topic = objectMapper
-                    .readValue(websocketMessage.getData().get("topic"), ChatTopic.class);
+                    .readValue(data.get("topic"), ChatTopic.class);
             topic.getParticipants().add(websocketMessage.getFrom());
 
             if (topic.getParticipants().size() < 2) {
                 throw new Exception("Participants not enough");
-            } else if (topic.getParticipants().size() == 2) {
+            } else if (!isGroup && topic.getParticipants().size() == 2) {
                 var opponent = filterParticipantsExcepts(topic.getParticipants(), websocketMessage.getFrom())
                         .stream()
                         .findFirst()
@@ -115,6 +117,20 @@ public class ChatServiceImpl implements ChatService {
                     if (exist) {
                         throw new Exception("Topic exists");
                     }
+                }
+                topic.setTitle(null);
+            } else if (!isGroup && topic.getParticipants().size() > 2) {
+                throw new Exception("Can't create topic");
+            } else if (topic.getParticipants().size() < 3) {
+                throw new Exception("Group must have at least 3 people");
+            } else {
+                if (topic.getTitle().isEmpty()) {
+                    topic.setTitle(
+                            topic.getParticipants()
+                                    .stream()
+                                    .map(User::getFullName)
+                                    .reduce("", (acc, cur) -> acc.isEmpty() ? cur : acc + ", " + cur)
+                    );
                 }
             }
 

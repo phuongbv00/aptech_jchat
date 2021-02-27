@@ -25,7 +25,6 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    console.log(this.chatWindow.nativeElement.scrollHeight);
     this.chatWindow.nativeElement.scrollTo(0, this.chatWindow.nativeElement.scrollHeight);
   }
 

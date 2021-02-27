@@ -17,8 +17,10 @@ export class ChatTopicCreateComponent implements OnInit {
   timer: any;
   topic: ChatTopic = {
     participants: [],
+    title: '',
   };
-  highlightStatus: boolean[] = [];
+  highlightStatus: Map<any, any> = new Map();
+  isOnGroupTab = true;
 
   constructor(private chatService: ChatService) { }
 
@@ -26,11 +28,13 @@ export class ChatTopicCreateComponent implements OnInit {
     this.searchUsers();
   }
 
-  createTopic(): void {
+  createTopic(isGroup: boolean): void {
+    if (!isGroup) { this.topic.title = ''; }
     this.chatService.send({
       event: EventConstant.CREATE_CHAT_TOPIC,
       data: new Map([
         ['topic', JSON.stringify(this.topic)],
+        ['isGroup', isGroup + ''],
       ]),
     });
     this.closeDialog.emit();
@@ -47,7 +51,7 @@ export class ChatTopicCreateComponent implements OnInit {
     });
   }
 
-  searchUserOnPersonTab(keyword: string): void {
+  searchUsersOnPersonTab(keyword: string): void {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.searchUsers(0, keyword);
@@ -55,26 +59,53 @@ export class ChatTopicCreateComponent implements OnInit {
     }, 500);
   }
 
+  searchUsersOnGroupTab(keyword: string): void {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.searchUsers(0, keyword);
+    }, 500);
+  }
+
   selectUserToCreatePersonTopic(user: User): void {
     this.resetUsersSelected();
     this.pickUser(user);
+  }
+
+  selectUserToCreateGroupTopic(user: User): void {
+    if (this.topic.participants.some(u => u.id === user.id)) {
+      this.popUser(user);
+    } else {
+      this.pickUser(user);
+    }
     console.log(this.topic.participants);
   }
 
   resetUsersSelected(): void {
-    this.highlightStatus = [];
+    this.highlightStatus.clear();
     this.topic.participants = [];
   }
 
   popUser(user: User): void {
-    const index = this.users.content.findIndex(u => u.id === user.id);
     this.topic.participants = this.topic.participants.filter(u => u.id !== user.id);
-    this.highlightStatus[index] = true;
+    this.highlightStatus.delete(user.id);
   }
 
   pickUser(user: User): void {
-    const index = this.users.content.findIndex(u => u.id === user.id);
     this.topic.participants.push(user);
-    this.highlightStatus[index] = true;
+    this.highlightStatus.set(user.id, true);
+  }
+
+  changeTab(evt: any): void {
+    console.log(evt);
+    this.isOnGroupTab = evt.tabTitle === 'Group';
+    this.resetUsersSelected();
+    this.topic.title = '';
+  }
+
+  isValidTopic(): boolean {
+    if (this.isOnGroupTab) {
+      return this.topic.participants.length > 1;
+    }
+    return this.topic.participants.length > 0;
   }
 }
