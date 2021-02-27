@@ -5,58 +5,53 @@
   border-top: none;
 }
 
-.chat-box {
-  max-height: 72.5vh;
-  overflow-y: auto;
+.chat-container {
+  .avatar-container {
+    margin-top: -1.1rem;
+    align-self: baseline;
+    position: relative;
+    margin-right: 0.3rem;
 
-  .chat-container {
-    .avatar-container {
-      margin-top: -1.1rem;
-      align-self: baseline;
-      position: relative;
-      margin-right: 0.3rem;
-
-      .username {
-        position: absolute;
-        top: -0.125rem;
-        left: 2.5rem;
-        color: nb-theme(color-basic-600);
-        width: max-content;
-      }
-    }
-
-    .chat-basic {
-      margin-bottom: .125rem;
-      cursor: pointer;
-    }
-
-    .my-chat {
-      @extend .chat-basic;
-      background-color: nb-theme(color-success-400);
-      color: white;
-      border-bottom-left-radius: .5rem;
-      border-top-left-radius: .5rem;
-    }
-
-    .my-first-chat {
-      @extend .my-chat;
-      border-top-right-radius: .5rem;
-    }
-
-    .their-chat {
-      @extend .chat-basic;
-      background-color: nb-theme(color-primary-200);
-      border-bottom-right-radius: .5rem;
-      border-top-right-radius: .5rem;
-    }
-
-    .their-last-chat {
-      @extend .their-chat;
-      border-bottom-left-radius: .5rem;
-    }
-
-    .time {
+    .username {
+      position: absolute;
+      top: -0.125rem;
+      left: 2.5rem;
       color: nb-theme(color-basic-600);
+      width: max-content;
     }
+  }
+
+  .chat-basic {
+    margin-bottom: .125rem;
+    cursor: pointer;
+  }
+
+  .my-chat {
+    @extend .chat-basic;
+    background-color: nb-theme(color-success-400);
+    color: white;
+    border-bottom-left-radius: .5rem;
+    border-top-left-radius: .5rem;
+  }
+
+  .my-first-chat {
+    @extend .my-chat;
+    border-top-right-radius: .5rem;
+  }
+
+  .their-chat {
+    @extend .chat-basic;
+    background-color: nb-theme(color-primary-200);
+    border-bottom-right-radius: .5rem;
+    border-top-right-radius: .5rem;
+  }
+
+  .their-last-chat {
+    @extend .their-chat;
+    border-bottom-left-radius: .5rem;
+  }
+
+  .time {
+    color: nb-theme(color-basic-600);
   }
 }

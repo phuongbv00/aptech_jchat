@@ -1,12 +1,7 @@
 @import "src/themes";
 
-.chat-list-container {
-  max-height: 80vh;
-  overflow-y: auto;
-
-  .active-chat {
-    background-color: nb-theme(color-primary-200);
-  }
+.active-chat {
+  background-color: nb-theme(color-primary-200);
 }
 
 :host nb-list-item {

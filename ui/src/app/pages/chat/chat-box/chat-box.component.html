@@ -1,30 +1,27 @@
-<div class="chat-box" #chatWindow>
-  <nb-list class="p-2 p-3">
-    <nb-list-item
-      *ngFor="let msg of messages; index as i"
-      class="chat-container d-flex p-0 align-items-end"
-      [class.flex-row-reverse]="isMyChat(msg)"
-      [style.padding-top]="!isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i) ? '2rem!important' : ''">
-      <div
-        class="avatar-container"
-        *ngIf="!isMyChat(msg)"
-        [style.visibility]="isFirstMessageInAnUserBatch(msg, i) ? 'visible' : 'hidden'">
-        <app-avatar
-          size="36px"
-          [src]="msg.createdBy.avatar"
-        ></app-avatar>
-        <small class="username">{{msg.createdBy.fullName}}</small>
-      </div>
-      <div
-        [class.my-chat]="isMyChat(msg)"
-        [class.my-first-chat]="isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i)"
-        [class.their-chat]="!isMyChat(msg)"
-        [class.their-last-chat]="!isMyChat(msg) && isLastMessageInAnUserBatch(msg, i)"
-        class="py-2 px-3">
-        {{ msg.text }}
-      </div>
-      <small class="ms-1 me-1 time">{{msg.createdAt | localDatetime | date: 'hh:mm'}}</small>
-    </nb-list-item>
-  </nb-list>
-</div>
-
+<nb-list class="p-2 p-3">
+  <nb-list-item
+    *ngFor="let msg of messages; index as i"
+    class="chat-container d-flex p-0 align-items-end"
+    [class.flex-row-reverse]="isMyChat(msg)"
+    [style.padding-top]="!isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i) ? '2rem!important' : ''">
+    <div
+      class="avatar-container"
+      *ngIf="!isMyChat(msg)"
+      [style.visibility]="isFirstMessageInAnUserBatch(msg, i) ? 'visible' : 'hidden'">
+      <app-avatar
+        size="36px"
+        [src]="msg.createdBy.avatar"
+      ></app-avatar>
+      <small class="username">{{msg.createdBy.fullName}}</small>
+    </div>
+    <div
+      [class.my-chat]="isMyChat(msg)"
+      [class.my-first-chat]="isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i)"
+      [class.their-chat]="!isMyChat(msg)"
+      [class.their-last-chat]="!isMyChat(msg) && isLastMessageInAnUserBatch(msg, i)"
+      class="py-2 px-3">
+      {{ msg.text }}
+    </div>
+    <small class="ms-1 me-1 time">{{msg.createdAt | localDatetime | date: 'hh:mm'}}</small>
+  </nb-list-item>
+</nb-list>

@@ -17,15 +17,14 @@ import {AuthService} from '../../../shared/services/auth.service';
 export class ChatBoxComponent implements OnInit, AfterViewChecked {
   @Input() messages: ChatMessage[];
 
-  @ViewChild('chatWindow') chatWindow: ElementRef;
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private element: ElementRef) { }
 
   ngOnInit(): void {
   }
 
   ngAfterViewChecked(): void {
-    this.chatWindow.nativeElement.scrollTo(0, this.chatWindow.nativeElement.scrollHeight);
+    this.element.nativeElement.scrollTo(0, this.element.nativeElement.scrollHeight);
   }
 
   isMyChat(mess: ChatMessage): boolean {

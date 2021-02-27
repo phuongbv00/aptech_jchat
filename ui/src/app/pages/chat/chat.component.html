@@ -1,10 +1,11 @@
 <nb-layout>
-  <nb-layout-column class="d-flex p-0">
+  <nb-layout-column class="d-flex p-0" style="height: 100vh">
     <div class="bg-white p-2 d-flex flex-column" style="max-width: 40vw">
       <app-chat-profile
         (openCreateDialog)="dialogService.open(createTopicDialog)"
       ></app-chat-profile>
       <app-chat-list
+        style="overflow-y: auto"
         (topicSelect)="onTopicSelected($event)"
         [topics]="topics"
         [topicSelected]="topicSelected"
@@ -24,6 +25,7 @@
         <h5 class="ms-2 mb-0">{{ topicSelected.title }}</h5>
       </div>
       <app-chat-box
+        style="overflow-y: auto"
         class="bg-white h-100"
         [messages]="topicSelected.messages"
       ></app-chat-box>
