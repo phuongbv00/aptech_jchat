@@ -31,25 +31,25 @@
     @extend .chat-basic;
     background-color: nb-theme(color-success-400);
     color: white;
-    border-bottom-left-radius: .5rem;
-    border-top-left-radius: .5rem;
+    border-bottom-left-radius: 18px;
+    border-top-left-radius: 18px;
   }
 
   .my-first-chat {
     @extend .my-chat;
-    border-top-right-radius: .5rem;
+    border-top-right-radius: 18px;
   }
 
   .their-chat {
     @extend .chat-basic;
     background-color: nb-theme(color-primary-200);
-    border-bottom-right-radius: .5rem;
-    border-top-right-radius: .5rem;
+    border-bottom-right-radius: 18px;
+    border-top-right-radius: 18px;
   }
 
   .their-last-chat {
     @extend .their-chat;
-    border-bottom-left-radius: .5rem;
+    border-bottom-left-radius: 18px;
   }
 
   .time {
