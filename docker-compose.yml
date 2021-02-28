@@ -5,8 +5,15 @@ services:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: root@123
+      - MYSQL_ROOT_PASSWORD=root@123
     ports:
       - 3306:3306
     volumes:
       - ./docker/volumes/mysql:/var/lib/mysql
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - ./docker/volumes/redis:/data
