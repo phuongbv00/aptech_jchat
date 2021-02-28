@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private getUsersSub: Subscription;
   private createChatTopicSub: Subscription;
   private getChatHistorySub: Subscription;
+  private chatSeenSub: Subscription;
 
   constructor(private rxStompService: RxStompService,
               private chatService: ChatService,
@@ -60,6 +61,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.getChatHistorySub = this.rxStompService
       .watch(`${TopicConstant.GET_CHAT_HISTORY}/${this.authService.getCredentials().id}`)
       .subscribe((message: Message) => this.handleGetChatHistorySub(JSON.parse(message.body)));
+    this.chatSeenSub = this.rxStompService
+      .watch(`${TopicConstant.CHAT_SEEN}/${this.authService.getCredentials().id}`)
+      .subscribe((message: Message) => this.handleChatSeenSub(JSON.parse(message.body)));
   }
 
   ngOnInit(): void {
@@ -76,6 +80,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.getUsersSub.unsubscribe();
     this.createChatTopicSub.unsubscribe();
     this.getChatHistorySub.unsubscribe();
+    this.chatSeenSub.unsubscribe();
   }
 
   // handle subscriptions
@@ -92,6 +97,9 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.topics[k].updatedBy = mess.topic.updatedBy;
         this.topics[k].updatedAt = mess.topic.updatedAt;
         this.topics[k].messages.push(mess);
+        if (this.topics[k].id !== this.topicSelected?.id) {
+          this.topics[k].unseen = true;
+        }
         this.arrayMove(this.topics, k, 0);
         break;
       }
@@ -101,7 +109,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   handleGetChatTopicsSub(topics: ChatTopic[]): void {
     this.topics = topics
       .map(topic => this.chatService.refactorChatTopic(topic, this.authService.getCredentials().id));
-    this.onTopicSelected(this.topics[0]);
+    for (const k in this.topics) {
+      if (!this.topics[k].unseen) {
+        this.onTopicSelected(this.topics[k]);
+        break;
+      }
+    }
     console.log(this.topics);
   }
 
@@ -119,6 +132,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.topicSelected.messages.unshift(...messList);
   }
 
+  handleChatSeenSub(topicId: number): void {
+    console.log(topicId);
+    for (const topic of this.topics) {
+      if (topic.id === topicId) {
+        topic.unseen = false;
+        break;
+      }
+    }
+  }
+
   // normal func
   sentChat(mess: WebsocketMessage): void {
     this.chatService.send(mess);
@@ -129,15 +152,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     const data = new Map([
       ['topicId', this.topicSelected.id],
     ]);
-    if (this.topicSelected.messages.length > 50) {
-      return;
-    } else if (this.topicSelected.messages.length > 0) {
-      data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
+    // seen message
+    if (this.topicSelected.unseen) {
+      this.chatService.send({
+        event: EventConstant.CHAT_SEEN,
+        data: new Map([
+          ['topicId', this.topicSelected.id.toString()],
+        ]),
+      });
     }
-    this.chatService.send({
-      event: EventConstant.GET_CHAT_HISTORY,
-      data,
-    });
+    // get chat history
+    if (this.topicSelected.messages.length < 50) {
+      const evt = {
+        event: EventConstant.GET_CHAT_HISTORY,
+        data: new Map([
+          ['topicId', this.topicSelected.id.toString()],
+        ]),
+      };
+      if (this.topicSelected.messages.length > 0) {
+        evt.data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
+      }
+      this.chatService.send(evt);
+    }
   }
 
   arrayMove(arr, fromIndex, toIndex): void {

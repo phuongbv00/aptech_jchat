@@ -1,5 +1,6 @@
 <nb-list>
   <nb-list-item
+    class="px-2"
     [class.active-chat]="topic == topicSelected"
     *ngFor="let topic of topics"
     (click)="onTopicSelected(topic)"
@@ -10,17 +11,17 @@
         [isGroup]="topic.participants.length > 2"
         size="50px"></app-avatar>
       <div class="can-be-collapsed d-flex flex-column ps-2 pe-3 flex-grow-1">
-        <b>{{ topic.title }}</b>
+        <span [class.font-weight-bold]="topic.unseen">{{ topic.title | textTruncate: 25 }}</span>
         <small>
-          <b class="text-secondary">
+          <span class="text-secondary" [class.font-weight-bold]="topic.unseen">
             {{ topic.updatedBy.fullName + ': ' }}
-            {{ topic.lastMessage || 'has created topic' | textTruncate: [10, '...'] }}
-          </b>
+            {{ topic.lastMessage || 'has created topic' | textTruncate: 10 }}
+          </span>
         </small>
       </div>
       <div class="can-be-collapsed d-flex flex-column align-items-end">
         <small class="text-secondary">{{ topic.updatedAt | localDatetime | agoDatetime }}</small>
-        <nb-badge class="position-relative mt-1" dotMode status="success"></nb-badge>
+        <nb-badge *ngIf="topic.unseen" class="position-relative mt-1" dotMode status="danger"></nb-badge>
       </div>
     </div>
   </nb-list-item>

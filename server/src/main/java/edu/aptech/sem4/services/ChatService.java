@@ -10,4 +10,5 @@ public interface ChatService {
     void handleCreateChatTopicMessage(WebsocketMessage websocketMessage);
     void handleGetUsersMessage(WebsocketMessage websocketMessage);
     void handleGetChatHistoryMessage(WebsocketMessage websocketMessage);
+    void handleChatSeenMessage(WebsocketMessage websocketMessage);
 }

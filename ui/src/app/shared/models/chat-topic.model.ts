@@ -1,7 +1,7 @@
 import { ChatMessage } from './chat-message.model';
 import { User } from './user.model';
 export class ChatTopic {
-    id?: string;
+    id?: number;
     title?: string;
     createdBy?: User;
     updatedBy?: User;
@@ -11,4 +11,5 @@ export class ChatTopic {
     createdAt?: number[];
     messages?: ChatMessage[];
     lastMessage?: string;
+    unseen?: boolean;
 }
