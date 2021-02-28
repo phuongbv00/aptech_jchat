@@ -163,7 +163,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void handleGetChatHistory(WebsocketMessage websocketMessage) {
+    public void handleGetChatHistoryMessage(WebsocketMessage websocketMessage) {
         var data = websocketMessage.getData();
         var topic = ChatTopic.builder().id(Long.valueOf(data.get("topicId"))).build();
         var beforeMessageId = data.containsKey("beforeMessageId")

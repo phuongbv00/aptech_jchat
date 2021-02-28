@@ -38,7 +38,7 @@ public class WebSocketController {
                 chatService.handleGetUsersMessage(msg);
                 break;
             case EventConstant.GET_CHAT_HISTORY:
-                chatService.handleGetChatHistory(msg);
+                chatService.handleGetChatHistoryMessage(msg);
                 break;
             default:
                 break;

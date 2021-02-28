@@ -47,4 +47,6 @@ public class ChatTopic {
     private String title;
 
     private String lastMessage;
+
+    private Boolean unseen;
 }
