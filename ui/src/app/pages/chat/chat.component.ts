@@ -99,6 +99,13 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.topics[k].messages.push(mess);
         if (this.topics[k].id !== this.topicSelected?.id) {
           this.topics[k].unseen = true;
+        } else {
+          this.chatService.send({
+            event: EventConstant.CHAT_SEEN,
+            data: new Map([
+              ['topicId', this.topicSelected.id.toString()],
+            ]),
+          });
         }
         this.arrayMove(this.topics, k, 0);
         break;
