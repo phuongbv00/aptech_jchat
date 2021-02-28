@@ -8,3 +8,9 @@
     border-bottom: none;
     border-top: none;
 }
+
+@media (max-width: 425px) {
+  .can-be-collapsed {
+    display: none!important;
+  }
+}

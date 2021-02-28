@@ -1,14 +1,19 @@
-<div class="pt-2 ps-2 pb-3 d-flex align-items-center">
-  <app-avatar
-    [src]="profile.avatar"
-    size="36px"
-  ></app-avatar>
-  <b class="ms-2">{{profile.fullName}}</b>
-  <div class="ms-auto">
-    <button class="ms-3" nbButton status="warning" size="small" shape="round">
+<div class="profile-container pt-2 px-2 d-flex align-items-center">
+  <div class="d-flex justify-content-center align-items-center pb-3 flex-wrap">
+    <app-avatar
+      [src]="profile.avatar"
+      size="36px"
+    ></app-avatar>
+    <b class="px-2">{{profile.fullName}}</b>
+  </div>
+  <div class="ms-auto d-flex gap-2 flex-wrap pb-3 justify-content-center">
+    <button nbButton status="warning" size="small" shape="round">
       <nb-icon icon="edit-outline"></nb-icon>
     </button>
-    <button class="ms-2" nbButton status="success" size="small" shape="round" (click)="openCreateDialog.emit()">
+    <button nbButton status="danger" size="small" shape="round" (click)="logout()">
+      <nb-icon icon="log-out-outline"></nb-icon>
+    </button>
+    <button nbButton status="success" size="small" shape="round" (click)="openCreateDialog.emit()">
       <nb-icon icon="plus-outline"></nb-icon>
     </button>
   </div>

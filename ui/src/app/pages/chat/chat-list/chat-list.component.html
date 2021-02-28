@@ -9,7 +9,7 @@
         [src]="topic.avatar"
         [isGroup]="topic.participants.length > 2"
         size="50px"></app-avatar>
-      <div class="d-flex flex-column ps-2 pe-3 flex-grow-1">
+      <div class="can-be-collapsed d-flex flex-column ps-2 pe-3 flex-grow-1">
         <b>{{ topic.title }}</b>
         <small>
           <b class="text-secondary">
@@ -18,7 +18,7 @@
           </b>
         </small>
       </div>
-      <div class="d-flex flex-column align-items-end">
+      <div class="can-be-collapsed d-flex flex-column align-items-end">
         <small class="text-secondary">{{ topic.updatedAt | localDatetime | agoDatetime }}</small>
         <nb-badge class="position-relative mt-1" dotMode status="success"></nb-badge>
       </div>

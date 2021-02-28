@@ -3,7 +3,7 @@
     *ngFor="let msg of messages; index as i"
     class="chat-container d-flex p-0 align-items-end"
     [class.flex-row-reverse]="isMyChat(msg)"
-    [style.padding-top]="!isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i) ? '2rem!important' : ''">
+    [style.padding-top]="isFirstMessageInAnUserBatch(msg, i) ? (isMyChat(msg) ? '1rem!important' : '2rem!important') : ''">
     <div
       class="avatar-container"
       *ngIf="!isMyChat(msg)"

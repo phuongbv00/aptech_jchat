@@ -4,10 +4,7 @@ import edu.aptech.sem4.auth.AuthBasicLoginParams;
 import edu.aptech.sem4.auth.AuthRegisterParams;
 import edu.aptech.sem4.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
@@ -26,5 +23,10 @@ public class AuthController {
         if (token == null)
             throw new Exception();
         return token;
+    }
+
+    @DeleteMapping("logout")
+    public void logout() {
+        
     }
 }
