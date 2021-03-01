@@ -5,7 +5,9 @@ import {
   ElementRef,
   HostListener,
   Input,
-  OnInit
+  OnInit,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 
@@ -16,8 +18,10 @@ import {AuthService} from '../../../shared/services/auth.service';
 })
 export class ChatBoxComponent implements OnInit, AfterViewChecked {
   @Input() messages: ChatMessage[];
+  @Output() loadHistory = new EventEmitter<any>();
 
   isScrolling = false;
+  isLoadingHistory = false;
 
   constructor(private authService: AuthService,
               private element: ElementRef) { }
@@ -26,7 +30,9 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
   onScrolling(): void {
     this.isScrolling = true;
     if (this.element.nativeElement.scrollTop === 0) {
+      this.isLoadingHistory = true;
       console.log('load more!');
+      this.loadHistory.emit();
     }
   }
 
@@ -34,10 +40,12 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if (!this.isScrolling) {
+    if (!this.isScrolling && !this.isLoadingHistory) {
       this.element.nativeElement.scrollTo(0, this.element.nativeElement.scrollHeight);
-    } else {
+    } else if (this.isScrolling) {
       this.isScrolling = false;
+    } else if (this.isLoadingHistory) {
+      this.isLoadingHistory = false;
     }
   }
 

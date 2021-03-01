@@ -14,6 +14,8 @@ import {User} from '../../shared/models/user.model';
 import {EventConstant} from '../../shared/constants/event.constant';
 import {AuthService} from '../../shared/services/auth.service';
 
+const MAX_CHAT_HISTORY = 20;
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -169,17 +171,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     }
     // get chat history
-    if (this.topicSelected.messages.length < 50) {
-      const evt = {
-        event: EventConstant.GET_CHAT_HISTORY,
-        data: new Map([
-          ['topicId', this.topicSelected.id.toString()],
-        ]),
-      };
-      if (this.topicSelected.messages.length > 0) {
-        evt.data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
-      }
-      this.chatService.send(evt);
+    if (this.topicSelected.messages.length < MAX_CHAT_HISTORY) {
+      this.loadHistory();
     }
   }
 
@@ -187,5 +180,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     const element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
+  }
+
+  loadHistory(): void {
+    const evt = {
+      event: EventConstant.GET_CHAT_HISTORY,
+      data: new Map([
+        ['topicId', this.topicSelected.id.toString()],
+        ['limit', MAX_CHAT_HISTORY.toString()],
+      ]),
+    };
+    if (this.topicSelected.messages.length > 0) {
+      evt.data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
+    }
+    this.chatService.send(evt);
   }
 }

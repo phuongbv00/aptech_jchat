@@ -197,12 +197,13 @@ public class ChatServiceImpl implements ChatService {
     public void handleGetChatHistoryMessage(WebsocketMessage websocketMessage) {
         var data = websocketMessage.getData();
         var topic = ChatTopic.builder().id(Long.valueOf(data.get("topicId"))).build();
+        var limit = Integer.valueOf(websocketMessage.getData().get("limit"));
         var beforeMessageId = data.containsKey("beforeMessageId")
                 ? Long.valueOf(data.get("beforeMessageId"))
                 : null;
         var history = beforeMessageId != null
-                ? chatMessageRepository.findByTopicAndIdLessThanOrderByCreatedAtDesc(topic, beforeMessageId, PageRequest.of(0, 100))
-                : chatMessageRepository.findByTopicOrderByCreatedAtDesc(topic, PageRequest.of(0, 100));
+                ? chatMessageRepository.findByTopicAndIdLessThanOrderByCreatedAtDesc(topic, beforeMessageId, PageRequest.of(0, limit))
+                : chatMessageRepository.findByTopicOrderByCreatedAtDesc(topic, PageRequest.of(0, limit));
         history = history.stream()
                 .sorted(Comparator.comparing(ChatMessage::getCreatedAt))
                 .collect(Collectors.toList());

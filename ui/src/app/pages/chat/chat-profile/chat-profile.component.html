@@ -4,7 +4,7 @@
       [src]="profile.avatar"
       size="36px"
     ></app-avatar>
-    <b class="px-2">{{profile.fullName}}</b>
+    <b class="px-2 text-center">{{profile.fullName | textTruncate: 20}}</b>
   </div>
   <div class="ms-auto d-flex gap-2 flex-wrap pb-3 justify-content-center">
     <button nbButton status="warning" size="small" shape="round">

@@ -23,6 +23,7 @@
         style="overflow-y: auto"
         class="bg-white h-100"
         [messages]="topicSelected.messages"
+        (loadHistory)="loadHistory()"
       ></app-chat-box>
       <app-chat-form
         class="mt-auto"
