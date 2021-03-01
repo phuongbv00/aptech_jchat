@@ -3,9 +3,9 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
+  HostListener,
   Input,
-  OnInit,
-  ViewChild
+  OnInit
 } from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 
@@ -17,14 +17,28 @@ import {AuthService} from '../../../shared/services/auth.service';
 export class ChatBoxComponent implements OnInit, AfterViewChecked {
   @Input() messages: ChatMessage[];
 
+  isScrolling = false;
+
   constructor(private authService: AuthService,
               private element: ElementRef) { }
+
+  @HostListener('scroll')
+  onScrolling(): void {
+    this.isScrolling = true;
+    if (this.element.nativeElement.scrollTop === 0) {
+      console.log('load more!');
+    }
+  }
 
   ngOnInit(): void {
   }
 
   ngAfterViewChecked(): void {
-    this.element.nativeElement.scrollTo(0, this.element.nativeElement.scrollHeight);
+    if (!this.isScrolling) {
+      this.element.nativeElement.scrollTo(0, this.element.nativeElement.scrollHeight);
+    } else {
+      this.isScrolling = false;
+    }
   }
 
   isMyChat(mess: ChatMessage): boolean {
