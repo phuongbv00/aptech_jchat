@@ -57,6 +57,7 @@
           <div>
             <input [(ngModel)]="topic.title" nbInput fullWidth fieldSize="large" placeholder="Group Name">
             <div
+              style="max-width: 14rem;"
               *ngIf="topic.participants.length > 0"
               class="d-flex flex-wrap gap-2 pt-2">
               <div

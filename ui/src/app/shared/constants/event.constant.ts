@@ -5,4 +5,5 @@ export class EventConstant {
   static CREATE_CHAT_TOPIC = 'CREATE_CHAT_TOPIC';
   static GET_CHAT_HISTORY = 'GET_CHAT_HISTORY';
   static CHAT_SEEN = 'CHAT_SEEN';
+  static UPDATE_CHAT_GROUP = 'UPDATE_CHAT_GROUP';
 }

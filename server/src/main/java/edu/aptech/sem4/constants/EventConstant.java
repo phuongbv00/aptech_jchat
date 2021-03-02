@@ -7,4 +7,5 @@ public class EventConstant {
     public static final String GET_USERS = "GET_USERS";
     public static final String GET_CHAT_HISTORY = "GET_CHAT_HISTORY";
     public static final String CHAT_SEEN = "CHAT_SEEN";
+    public static final String UPDATE_CHAT_GROUP = "UPDATE_CHAT_GROUP";
 }

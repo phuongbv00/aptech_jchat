@@ -34,6 +34,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   private createChatTopicSub: Subscription;
   private getChatHistorySub: Subscription;
   private chatSeenSub: Subscription;
+  private removeChatGroupSub: Subscription;
+  private updateChatGroupSub: Subscription;
 
   constructor(private rxStompService: RxStompService,
               private chatService: ChatService,
@@ -66,6 +68,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatSeenSub = this.rxStompService
       .watch(`${TopicConstant.CHAT_SEEN}/${this.authService.getCredentials().id}`)
       .subscribe((message: Message) => this.handleChatSeenSub(JSON.parse(message.body)));
+    this.removeChatGroupSub = this.rxStompService
+      .watch(`${TopicConstant.REMOVE_CHAT_GROUP}/${this.authService.getCredentials().id}`)
+      .subscribe((message: Message) => this.handleRemoveChatGroupSub(JSON.parse(message.body)));
+    this.updateChatGroupSub = this.rxStompService
+      .watch(`${TopicConstant.UPDATE_CHAT_GROUP}/${this.authService.getCredentials().id}`)
+      .subscribe((message: Message) => this.handleUpdateChatGroupSub(JSON.parse(message.body)));
   }
 
   ngOnInit(): void {
@@ -83,6 +91,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.createChatTopicSub.unsubscribe();
     this.getChatHistorySub.unsubscribe();
     this.chatSeenSub.unsubscribe();
+    this.removeChatGroupSub.unsubscribe();
+    this.updateChatGroupSub.unsubscribe();
   }
 
   // handle subscriptions
@@ -146,6 +156,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     for (const topic of this.topics) {
       if (topic.id === topicId) {
         topic.unseen = false;
+        break;
+      }
+    }
+  }
+
+  handleRemoveChatGroupSub(topic: ChatTopic): void {
+    this.topics = this.topics.filter(t => t.id !== topic.id);
+    if (this.topicSelected.id === topic.id) {
+      this.topicSelected = null;
+    }
+  }
+
+  handleUpdateChatGroupSub(topic: ChatTopic): void {
+    for (const k in this.topics) {
+      if (this.topics[k].id === topic.id) {
+        this.topics[k].updatedBy = topic.updatedBy;
+        this.topics[k].updatedAt = topic.updatedAt;
+        this.topics[k].title = topic.title;
+        this.topics[k].participants = topic.participants;
         break;
       }
     }

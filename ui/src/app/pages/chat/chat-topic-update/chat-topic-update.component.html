@@ -1,0 +1,62 @@
+<nb-card>
+  <nb-card-header>Update topic</nb-card-header>
+  <nb-card-body>
+    <div class="d-flex gap-3">
+      <div>
+        <div class="search">
+          <nb-icon icon="search-outline"></nb-icon>
+          <input
+            #searchInputOnGroupTab
+            class="search-input"
+            placeholder="Search..."
+            (keyup)="searchUsersOnGroupTab(searchInputOnGroupTab.value)">
+        </div>
+        <nb-list class="mt-2">
+          <nb-list-item
+            *ngFor="let u of users?.content"
+            [class.user-selected]="highlightStatus.get(u.id)"
+            class="border-0 mt-1"
+            (click)="selectUserToCreateGroupTopic(u)">
+            <app-avatar
+              class="me-3"
+              size="36px"
+              [src]="u.avatar"
+            ></app-avatar>
+            {{u.fullName}}
+          </nb-list-item>
+        </nb-list>
+      </div>
+      <div>
+        <input [(ngModel)]="title" nbInput fullWidth fieldSize="large" placeholder="Group Name">
+        <div
+          style="max-width: 14rem;"
+          *ngIf="participants.length > 0"
+          class="d-flex flex-wrap gap-2 pt-2">
+          <div
+            class="participant d-flex flex-column flex-wrap position-relative"
+            *ngFor="let p of participants">
+            <app-avatar
+              [src]="p.avatar"
+              size="50px"></app-avatar>
+            <small class="text-center">{{p.fullName}}</small>
+            <nb-icon
+              *ngIf="!isMe(p)"
+              class="position-absolute bg-white"
+              style="top: 0; right: 0; border-radius: 50%"
+              icon="close-outline"
+              (click)="selectUserToCreateGroupTopic(p)"></nb-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton (click)="closeDialog.emit()" status="danger">Close</button>
+    <button
+      nbButton
+      [disabled]="!isValidTopic()"
+      (click)="updateTopic()"
+      status="success"
+      class="ms-3">Update</button>
+  </nb-card-footer>
+</nb-card>

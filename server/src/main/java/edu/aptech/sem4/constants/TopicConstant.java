@@ -8,4 +8,6 @@ public class TopicConstant {
     public static final String GET_USERS = "/topic/chat/get_users";
     public static final String GET_CHAT_HISTORY = "/topic/chat/get_chat_history";
     public static final String CHAT_SEEN = "/topic/chat/seen";
+    public static final String UPDATE_CHAT_GROUP = "/topic/chat/update_chat_group";
+    public static final String REMOVE_CHAT_GROUP = "/topic/chat/remove_chat_group";
 }

@@ -43,6 +43,9 @@ public class WebSocketController {
             case EventConstant.CHAT_SEEN:
                 chatService.handleChatSeenMessage(msg);
                 break;
+            case EventConstant.UPDATE_CHAT_GROUP:
+                chatService.handleUpdateChatGroupMessage(msg);
+                break;
             default:
                 break;
         }

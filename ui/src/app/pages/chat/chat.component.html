@@ -5,23 +5,19 @@
         (openCreateDialog)="dialogService.open(createTopicDialog)"
       ></app-chat-profile>
       <app-chat-list
-        style="overflow-y: auto"
+        class="overflow-auto"
         (topicSelect)="onTopicSelected($event)"
         [topics]="topics"
         [topicSelected]="topicSelected"
       ></app-chat-list>
     </div>
     <div *ngIf="topicSelected" class="d-flex flex-column flex-grow-1 border-start">
-      <div class="bg-white border-bottom p-3 d-flex align-items-center">
-        <app-avatar
-          size="50px"
-          [src]="topicSelected.avatar"
-          [isGroup]="topicSelected.participants.length > 2"></app-avatar>
-        <h5 class="ms-3 mb-0">{{ topicSelected.title }}</h5>
-      </div>
+      <app-chat-header
+        [topicSelected]="topicSelected"
+        (openEditChatTopicDialog)="dialogService.open(editChatTopicDialog)"
+      ></app-chat-header>
       <app-chat-box
-        style="overflow-y: auto"
-        class="bg-white h-100"
+        class="bg-white h-100 overflow-auto"
         [messages]="topicSelected.messages"
         (loadHistory)="loadHistory()"
       ></app-chat-box>
@@ -42,4 +38,12 @@
     (closeDialog)="ref.close()"
     [users]="searchedUsers"
   ></app-chat-topic-create>
+</ng-template>
+
+<ng-template #editChatTopicDialog let-ref="dialogRef">
+  <app-chat-topic-update
+    (closeDialog)="ref.close()"
+    [users]="searchedUsers"
+    [topic]="topicSelected"
+  ></app-chat-topic-update>
 </ng-template>

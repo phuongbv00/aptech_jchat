@@ -19,6 +19,8 @@ public class ChatMessage {
 
     private String text;
 
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "topic_id")
     private ChatTopic topic;

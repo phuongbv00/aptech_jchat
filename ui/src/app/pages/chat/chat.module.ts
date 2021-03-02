@@ -15,15 +15,17 @@ import {
   NbIconModule,
   NbListModule,
   NbBadgeModule,
-  NbCardModule, NbSelectModule, NbTabsetModule
+  NbCardModule, NbSelectModule, NbTabsetModule, NbContextMenuModule, NbTooltipModule
 } from '@nebular/theme';
 import { ChatProfileComponent } from './chat-profile/chat-profile.component';
 import { ChatTopicCreateComponent } from './chat-topic-create/chat-topic-create.component';
 import {SharedModule} from '../../shared/shared.module';
+import { ChatTopicUpdateComponent } from './chat-topic-update/chat-topic-update.component';
+import { ChatHeaderComponent } from './chat-header/chat-header.component';
 
 
 @NgModule({
-  declarations: [ChatComponent, ChatListComponent, ChatFormComponent, ChatBoxComponent, ChatProfileComponent, ChatTopicCreateComponent],
+  declarations: [ChatComponent, ChatListComponent, ChatFormComponent, ChatBoxComponent, ChatProfileComponent, ChatTopicCreateComponent, ChatTopicUpdateComponent, ChatHeaderComponent],
   imports: [
     CommonModule,
     ChatRoutingModule,
@@ -39,6 +41,8 @@ import {SharedModule} from '../../shared/shared.module';
     NbSelectModule,
     NbTabsetModule,
     SharedModule,
+    NbContextMenuModule,
+    NbTooltipModule,
   ]
 })
 export class ChatModule { }

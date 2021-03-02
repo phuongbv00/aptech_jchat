@@ -1,5 +1,6 @@
 package edu.aptech.sem4.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.aptech.sem4.constants.TopicConstant;
 import edu.aptech.sem4.dto.WebsocketMessage;
@@ -17,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -217,5 +219,53 @@ public class ChatServiceImpl implements ChatService {
         var userId = websocketMessage.getFrom().getId();
         seen(topicId, userId);
         send(TopicConstant.CHAT_SEEN, userId.toString(), topicId);
+    }
+
+    @Override
+    public void handleUpdateChatGroupMessage(WebsocketMessage websocketMessage) {
+        var data = websocketMessage.getData();
+        var topic = chatTopicRepository.findById(Long.valueOf(data.get("topicId"))).orElse(null);
+        if (topic == null) {
+            return;
+        }
+
+        // title
+        var title = data.get("title");
+        if (!title.isEmpty()) {
+            topic.setTitle(title);
+        }
+
+        // participants
+        try {
+            var oldMembers = topic.getParticipants();
+            var newMembers = Arrays.asList(
+                    objectMapper.readValue(data.get("participants"), User[].class)
+            );
+            var removedMembers = oldMembers.stream()
+                    .filter(u -> newMembers.stream().noneMatch(u2 -> u2.getId().equals(u.getId())))
+                    .collect(Collectors.toList());
+            var addedMembers = newMembers.stream()
+                    .filter(u -> oldMembers.stream().noneMatch(u2 -> u2.getId().equals(u.getId())))
+                    .collect(Collectors.toList());
+            var originMembers = newMembers.stream()
+                    .filter(u -> oldMembers.stream().anyMatch(u2 -> u2.getId().equals(u.getId())))
+                    .collect(Collectors.toList());
+            topic.setParticipants(newMembers);
+            topic = chatTopicRepository.save(topic);
+
+            for (var member: removedMembers) {
+                send(TopicConstant.REMOVE_CHAT_GROUP, member.getId().toString(), topic);
+            }
+
+            for (var member: addedMembers) {
+                send(TopicConstant.CREATE_CHAT_TOPIC, member.getId().toString(), topic);
+            }
+
+            for (var member: originMembers) {
+                send(TopicConstant.UPDATE_CHAT_GROUP, member.getId().toString(), topic);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }
