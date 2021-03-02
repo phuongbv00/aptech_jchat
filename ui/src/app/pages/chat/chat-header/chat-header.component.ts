@@ -44,6 +44,7 @@ export class ChatHeaderComponent implements OnInit {
 
   getParticipantNames(): string {
     return this.topicSelected.participants
+      .filter(p => p.id !== this.authService.getCredentials().id)
       .map(p => p.fullName)
       .reduce((acc, cur) => acc === '' ? cur : acc + ', ' + cur, '');
   }
