@@ -135,8 +135,12 @@ public class ChatServiceImpl implements ChatService {
                         .stream()
                         .findFirst()
                         .orElse(null);
-                var myTopics = chatTopicRepository.findByParticipantsId(websocketMessage.getFrom().getId());
-                for (var t: myTopics) {
+                var myPersonalTopics = chatTopicRepository
+                        .findByParticipantsId(websocketMessage.getFrom().getId())
+                        .stream()
+                        .filter(t -> t.getParticipants().size() == 2)
+                        .collect(Collectors.toList());
+                for (var t: myPersonalTopics) {
                     var exist = t.getParticipants()
                             .stream()
                             .filter(u -> u.getId().equals(opponent.getId()))
