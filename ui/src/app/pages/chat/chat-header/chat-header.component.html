@@ -2,11 +2,11 @@
   <app-avatar
     size="50px"
     [src]="topicSelected.avatar"
-    [isGroup]="topicSelected.participants.length > 2">
+    [isGroup]="topicSelected.isGroup">
   </app-avatar>
   <h5 class="ms-3 mb-0" [nbTooltip]="getParticipantNames()" nbTooltipPlacement="bottom" >{{ topicSelected.title }}</h5>
   <button
-    *ngIf="topicSelected.participants.length > 2"
+    *ngIf="topicSelected.isGroup"
     class="ms-auto" nbButton ghost shape="round"
     [nbContextMenu]="isMyTopic(topicSelected) ? settings2 : settings1"
     nbContextMenuTag="groupChatSettings">

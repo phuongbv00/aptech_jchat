@@ -42,7 +42,7 @@ export class ChatService {
   }
 
   refactorChatTopic(topic: ChatTopic, myId: number): ChatTopic {
-    const isGroup = topic.participants.length > 2;
+    const isGroup = topic.isGroup;
     const rs = {
       ...topic,
       messages: topic.messages ?? [],

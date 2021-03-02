@@ -12,7 +12,7 @@ import {filter, map} from 'rxjs/operators';
 export class ChatHeaderComponent implements OnInit {
   @Input() topicSelected: ChatTopic;
   @Output() openEditChatTopicDialog = new EventEmitter<any>();
-  @Output() leaveChatGroup = new EventEmitter<any>();
+  @Output() openLeaveChatGroupDialog = new EventEmitter<any>();
 
   settings1 = [{title: 'Leave Group'}];
   settings2 = [{title: 'Edit Group'}, {title: 'Leave Group'}];
@@ -32,6 +32,7 @@ export class ChatHeaderComponent implements OnInit {
             this.openEditChatTopicDialog.emit();
             break;
           case 'Leave Group':
+            this.openLeaveChatGroupDialog.emit();
             break;
         }
       });

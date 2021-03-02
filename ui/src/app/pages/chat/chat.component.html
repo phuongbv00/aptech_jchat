@@ -15,6 +15,7 @@
       <app-chat-header
         [topicSelected]="topicSelected"
         (openEditChatTopicDialog)="dialogService.open(editChatTopicDialog)"
+        (openLeaveChatGroupDialog)="openLeaveChatGroupDialog(leaveGroupDialog)"
       ></app-chat-header>
       <app-chat-box
         class="bg-white h-100 overflow-auto"
@@ -46,4 +47,16 @@
     [users]="searchedUsers"
     [topic]="topicSelected"
   ></app-chat-topic-update>
+</ng-template>
+
+<ng-template #leaveGroupDialog let-ref="dialogRef">
+  <nb-card accent="danger">
+    <nb-card-header>
+      Are you sure want to leave the group ?
+    </nb-card-header>
+    <nb-card-footer class="d-flex gap-2 justify-content-center">
+      <button nbButton (click)="ref.close()">No</button>
+      <button nbButton status="danger" (click)="leaveChatGroup()">Yes</button>
+    </nb-card-footer>
+  </nb-card>
 </ng-template>

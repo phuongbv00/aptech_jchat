@@ -12,4 +12,5 @@ export class ChatTopic {
     messages?: ChatMessage[];
     lastMessage?: string;
     unseen?: boolean;
+    isGroup?: boolean;
 }

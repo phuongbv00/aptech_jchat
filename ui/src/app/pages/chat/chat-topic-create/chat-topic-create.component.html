@@ -79,13 +79,12 @@
       </nb-tab>
     </nb-tabset>
   </nb-card-body>
-  <nb-card-footer class="d-flex justify-content-end">
+  <nb-card-footer class="d-flex justify-content-center gap-2">
     <button nbButton (click)="closeDialog.emit()" status="danger">Close</button>
     <button
       nbButton
       [disabled]="!isValidTopic()"
       (click)="createTopic(isOnGroupTab)"
-      status="success"
-      class="ms-3">Create Topic</button>
+      status="success">Submit</button>
   </nb-card-footer>
 </nb-card>

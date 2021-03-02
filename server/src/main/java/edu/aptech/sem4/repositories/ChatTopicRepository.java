@@ -11,4 +11,5 @@ import java.util.List;
 public interface ChatTopicRepository extends JpaRepository<ChatTopic, Long> {
     List<ChatTopic> findByParticipantsContainsOrderByUpdatedAtDesc(User participant);
     List<ChatTopic> findByParticipantsId(Long uid);
+    List<ChatTopic> findByParticipantsIdAndIsGroup(Long uid, Boolean isGroup);
 }

@@ -1,14 +1,14 @@
 import { ChatMessage } from 'src/app/shared/models/chat-message.model';
 import { TopicConstant } from './../../shared/constants/topic.constant';
 import { ChatTopic } from '../../shared/models/chat-topic.model';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message } from '@stomp/stompjs';
 import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
 import {ChatService} from '../../shared/services/chat.service';
 import {map} from 'rxjs/operators';
-import {NbDialogService, NbToastrService} from '@nebular/theme';
+import {NbDialogRef, NbDialogService, NbToastrService} from '@nebular/theme';
 import {Pageable} from '../../shared/dto/pageable.dto';
 import {User} from '../../shared/models/user.model';
 import {EventConstant} from '../../shared/constants/event.constant';
@@ -25,6 +25,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   topics: ChatTopic[] = [];
   topicSelected: ChatTopic;
   searchedUsers: Pageable<User>;
+
+  leaveChatGroupDialogRef: NbDialogRef<any>;
 
   // subscriptions
   private exceptionSub: Subscription;
@@ -171,10 +173,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   handleUpdateChatGroupSub(topic: ChatTopic): void {
     for (const k in this.topics) {
       if (this.topics[k].id === topic.id) {
-        this.topics[k].updatedBy = topic.updatedBy;
-        this.topics[k].updatedAt = topic.updatedAt;
-        this.topics[k].title = topic.title;
-        this.topics[k].participants = topic.participants;
+        this.topics[k] = this.chatService.refactorChatTopic(topic, this.authService.getCredentials().id);
         break;
       }
     }
@@ -223,5 +222,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       evt.data.set('beforeMessageId', this.topicSelected.messages[0].id.toString());
     }
     this.chatService.send(evt);
+  }
+
+  leaveChatGroup(): void {
+    this.chatService.send({
+      event: EventConstant.LEAVE_CHAT_GROUP,
+      data: new Map([
+        ['topicId', this.topicSelected.id.toString()],
+      ]),
+    });
+    this.leaveChatGroupDialogRef.close();
+  }
+
+  openLeaveChatGroupDialog(ref: TemplateRef<any>): void {
+    this.leaveChatGroupDialogRef = this.dialogService.open(ref);
   }
 }

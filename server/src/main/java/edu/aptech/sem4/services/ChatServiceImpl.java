@@ -127,6 +127,7 @@ public class ChatServiceImpl implements ChatService {
             var topic = objectMapper
                     .readValue(data.get("topic"), ChatTopic.class);
             topic.getParticipants().add(websocketMessage.getFrom());
+            topic.setIsGroup(isGroup);
 
             if (topic.getParticipants().size() < 2) {
                 throw new Exception("Participants not enough");
@@ -136,10 +137,7 @@ public class ChatServiceImpl implements ChatService {
                         .findFirst()
                         .orElse(null);
                 var myPersonalTopics = chatTopicRepository
-                        .findByParticipantsId(websocketMessage.getFrom().getId())
-                        .stream()
-                        .filter(t -> t.getParticipants().size() == 2)
-                        .collect(Collectors.toList());
+                        .findByParticipantsIdAndIsGroup(websocketMessage.getFrom().getId(), false);
                 for (var t: myPersonalTopics) {
                     var exist = t.getParticipants()
                             .stream()
@@ -242,9 +240,10 @@ public class ChatServiceImpl implements ChatService {
         // participants
         try {
             var oldMembers = topic.getParticipants();
-            var newMembers = Arrays.asList(
+            var newMemberIds = Arrays.asList(
                     objectMapper.readValue(data.get("participants"), User[].class)
-            );
+            ).stream().map(User::getId).collect(Collectors.toList());
+            var newMembers = userRepository.findByIdIn(newMemberIds);
             var removedMembers = oldMembers.stream()
                     .filter(u -> newMembers.stream().noneMatch(u2 -> u2.getId().equals(u.getId())))
                     .collect(Collectors.toList());
@@ -254,7 +253,10 @@ public class ChatServiceImpl implements ChatService {
             var originMembers = newMembers.stream()
                     .filter(u -> oldMembers.stream().anyMatch(u2 -> u2.getId().equals(u.getId())))
                     .collect(Collectors.toList());
+
             topic.setParticipants(newMembers);
+            topic.setUpdatedBy(websocketMessage.getFrom());
+            topic.setUpdatedAt(LocalDateTime.now());
             topic = chatTopicRepository.save(topic);
 
             for (var member: removedMembers) {
@@ -269,7 +271,32 @@ public class ChatServiceImpl implements ChatService {
                 send(TopicConstant.UPDATE_CHAT_GROUP, member.getId().toString(), topic);
             }
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void handleLeaveChatGroupMessage(WebsocketMessage websocketMessage) {
+        var data = websocketMessage.getData();
+        var topic = chatTopicRepository.findById(Long.valueOf(data.get("topicId"))).orElse(null);
+        if (topic == null) {
+            return;
+        }
+        topic.setParticipants(
+                topic.getParticipants()
+                        .stream()
+                        .filter(u -> !u.getId().equals(websocketMessage.getFrom().getId()))
+                        .collect(Collectors.toList())
+        );
+        topic.setUpdatedAt(LocalDateTime.now());
+        topic.setUpdatedBy(websocketMessage.getFrom());
+        topic.setLastMessage(websocketMessage.getFrom().getFullName() + " has left group");
+        topic = chatTopicRepository.save(topic);
+
+        for (var p: topic.getParticipants()) {
+            send(TopicConstant.UPDATE_CHAT_GROUP, p.getId().toString(), topic);
+        }
+
+        send(TopicConstant.REMOVE_CHAT_GROUP, websocketMessage.getFrom().getId().toString(), topic);
     }
 }

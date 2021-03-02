@@ -49,4 +49,6 @@ public class ChatTopic {
     private String lastMessage;
 
     private Boolean unseen;
+
+    private Boolean isGroup = false;
 }

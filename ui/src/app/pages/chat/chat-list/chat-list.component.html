@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center w-100">
       <app-avatar
         [src]="topic.avatar"
-        [isGroup]="topic.participants.length > 2"
+        [isGroup]="topic.isGroup"
         size="50px"></app-avatar>
       <div class="can-be-collapsed d-flex flex-column ps-2 pe-3 flex-grow-1">
         <span [class.font-weight-bold]="topic.unseen">{{ topic.title | textTruncate: 25 }}</span>
