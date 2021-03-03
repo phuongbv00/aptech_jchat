@@ -17,7 +17,7 @@
         <small>
           <span class="text-secondary" [class.font-weight-bold]="topic.unseen">
             {{ topic.updatedBy.fullName + ': ' }}
-            {{ topic.lastMessage || '' | textTruncate: 10 }}
+            {{ topic.lastMessage || '' | textTruncate: 25 }}
           </span>
         </small>
       </div>
