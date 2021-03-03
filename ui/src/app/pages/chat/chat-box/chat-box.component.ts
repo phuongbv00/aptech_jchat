@@ -55,11 +55,11 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
 
   isFirstMessageInAnUserBatch(mess: ChatMessage, index: number): boolean {
     if (index === 0) { return true; }
-    return this.messages[index - 1].createdBy.id !== mess.createdBy.id;
+    return this.messages[index - 1].createdBy.id !== mess.createdBy.id || this.messages[index - 1].isSystem;
   }
 
   isLastMessageInAnUserBatch(mess: ChatMessage, index: number): boolean {
     if (index === this.messages.length - 1) { return true; }
-    return this.messages[index + 1].createdBy.id !== mess.createdBy.id;
+    return this.messages[index + 1].createdBy.id !== mess.createdBy.id || this.messages[index + 1].isSystem;
   }
 }

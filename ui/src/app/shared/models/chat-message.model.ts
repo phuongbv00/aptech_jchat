@@ -7,4 +7,5 @@ export class ChatMessage {
     topic: ChatTopic;
     createdBy: User;
     createdAt: number[];
+    isSystem?: boolean;
 }

@@ -2,6 +2,7 @@ package edu.aptech.sem4.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.aptech.sem4.constants.SystemMessageConstant;
 import edu.aptech.sem4.constants.TopicConstant;
 import edu.aptech.sem4.dto.WebsocketMessage;
 import edu.aptech.sem4.models.ChatMessage;
@@ -70,6 +71,25 @@ public class ChatServiceImpl implements ChatService {
         redisTemplate.delete(unseenKey(topicId, userId));
     }
 
+    private ChatMessage createSysMess(ChatTopic topic, String sysMess, User creator, List<User> members) {
+        if (members != null && !members.isEmpty()) {
+            sysMess = sysMess
+                    .replace(
+                            "${members}",
+                            members.stream()
+                                    .map(User::getFullName)
+                                    .reduce("", (acc, cur) -> acc.isEmpty() ? cur : acc + ", " + cur)
+                    );
+        }
+        return ChatMessage.builder()
+                .createdBy(creator)
+                .createdAt(LocalDateTime.now())
+                .text(sysMess.replace("${creator}", creator.getFullName()))
+                .topic(topic)
+                .isSystem(true)
+                .build();
+    }
+
     @Override
     public void send(String baseTopic, String endpoint, Object data) {
         var dest = baseTopic + "/" + endpoint;
@@ -127,6 +147,9 @@ public class ChatServiceImpl implements ChatService {
             var topic = objectMapper
                     .readValue(data.get("topic"), ChatTopic.class);
             topic.getParticipants().add(websocketMessage.getFrom());
+            var participantIds = topic.getParticipants().stream().map(User::getId).collect(Collectors.toList());
+            var participants = userRepository.findByIdIn(participantIds);
+            topic.setParticipants(participants);
             topic.setIsGroup(isGroup);
 
             if (topic.getParticipants().size() < 2) {
@@ -169,13 +192,25 @@ public class ChatServiceImpl implements ChatService {
             topic.setCreatedBy(websocketMessage.getFrom());
             topic.setUpdatedBy(websocketMessage.getFrom());
             topic = chatTopicRepository.save(topic);
-            for (var participant : topic.getParticipants()) {
-                if (participant.getId().equals(websocketMessage.getFrom().getId())) {
+
+            // sys message
+            var sysMess = isGroup
+                    ? createSysMess(topic, SystemMessageConstant.CREATE_CHAT_GROUP, topic.getCreatedBy(), null)
+                    : createSysMess(topic, SystemMessageConstant.CREATE_CHAT_PERSONAL, topic.getCreatedBy(), null);
+            sysMess = chatMessageRepository.save(sysMess);
+
+            topic.setLastMessage(sysMess.getText());
+            topic = chatTopicRepository.save(topic);
+
+            for (var p : topic.getParticipants()) {
+                if (p.getId().equals(websocketMessage.getFrom().getId())) {
                     topic.setUnseen(false);
                 } else {
                     topic.setUnseen(true);
+                    unseen(topic.getId(), p.getId());
                 }
-                send(TopicConstant.CREATE_CHAT_TOPIC, participant.getId().toString(), topic);
+                send(TopicConstant.CREATE_CHAT_TOPIC, p.getId().toString(), topic);
+                send(TopicConstant.SEND_TEXT_CHAT, p.getId().toString(), sysMess);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -233,6 +268,7 @@ public class ChatServiceImpl implements ChatService {
 
         // title
         var title = data.get("title");
+        var isRenamed = !topic.getTitle().equals(title) && !title.isEmpty();
         if (!title.isEmpty()) {
             topic.setTitle(title);
         }
@@ -259,16 +295,70 @@ public class ChatServiceImpl implements ChatService {
             topic.setUpdatedAt(LocalDateTime.now());
             topic = chatTopicRepository.save(topic);
 
+            ChatMessage sysMessRename = null;
+            ChatMessage sysMessAddMembers = null;
+            ChatMessage sysMessRemoveMembers = null;
+
+            if (isRenamed) {
+                sysMessRename = createSysMess(topic, SystemMessageConstant.RENAME_CHAT_GROUP, websocketMessage.getFrom(), null);
+                sysMessRename = chatMessageRepository.save(sysMessRename);
+                topic.setLastMessage(sysMessRename.getText());
+            }
+
+            if (!addedMembers.isEmpty()) {
+                sysMessAddMembers = createSysMess(topic, SystemMessageConstant.ADD_MEMBER_CHAT_GROUP, websocketMessage.getFrom(), addedMembers);
+                sysMessAddMembers = chatMessageRepository.save(sysMessAddMembers);
+                topic.setLastMessage(sysMessAddMembers.getText());
+            }
+
+            if (!removedMembers.isEmpty()) {
+                sysMessRemoveMembers = createSysMess(topic, SystemMessageConstant.REMOVE_MEMBER_CHAT_GROUP, websocketMessage.getFrom(), removedMembers);
+                sysMessRemoveMembers = chatMessageRepository.save(sysMessRemoveMembers);
+                topic.setLastMessage(sysMessRemoveMembers.getText());
+            }
+
+            topic = chatTopicRepository.save(topic);
+
             for (var member: removedMembers) {
                 send(TopicConstant.REMOVE_CHAT_GROUP, member.getId().toString(), topic);
             }
 
             for (var member: addedMembers) {
+                if (member.getId().equals(websocketMessage.getFrom().getId())) {
+                    topic.setUnseen(false);
+                } else {
+                    topic.setUnseen(true);
+                    unseen(topic.getId(), member.getId());
+                }
                 send(TopicConstant.CREATE_CHAT_TOPIC, member.getId().toString(), topic);
+                if (sysMessRename != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessRename);
+                }
+                if (sysMessAddMembers != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessAddMembers);
+                }
+                if (sysMessRemoveMembers != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessRemoveMembers);
+                }
             }
 
             for (var member: originMembers) {
+                if (member.getId().equals(websocketMessage.getFrom().getId())) {
+                    topic.setUnseen(false);
+                } else {
+                    topic.setUnseen(true);
+                    unseen(topic.getId(), member.getId());
+                }
                 send(TopicConstant.UPDATE_CHAT_GROUP, member.getId().toString(), topic);
+                if (sysMessRename != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessRename);
+                }
+                if (sysMessAddMembers != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessAddMembers);
+                }
+                if (sysMessRemoveMembers != null) {
+                    send(TopicConstant.SEND_TEXT_CHAT, member.getId().toString(), sysMessRemoveMembers);
+                }
             }
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
@@ -293,8 +383,21 @@ public class ChatServiceImpl implements ChatService {
         topic.setLastMessage(websocketMessage.getFrom().getFullName() + " has left group");
         topic = chatTopicRepository.save(topic);
 
+        var sysMess = createSysMess(topic, SystemMessageConstant.LEAVE_CHAT_GROUP, websocketMessage.getFrom(), null);
+        sysMess = chatMessageRepository.save(sysMess);
+
+        topic.setLastMessage(sysMess.getText());
+        topic = chatTopicRepository.save(topic);
+
         for (var p: topic.getParticipants()) {
+            if (p.getId().equals(websocketMessage.getFrom().getId())) {
+                topic.setUnseen(false);
+            } else {
+                topic.setUnseen(true);
+                unseen(topic.getId(), p.getId());
+            }
             send(TopicConstant.UPDATE_CHAT_GROUP, p.getId().toString(), topic);
+            send(TopicConstant.SEND_TEXT_CHAT, p.getId().toString(), sysMess);
         }
 
         send(TopicConstant.REMOVE_CHAT_GROUP, websocketMessage.getFrom().getId().toString(), topic);

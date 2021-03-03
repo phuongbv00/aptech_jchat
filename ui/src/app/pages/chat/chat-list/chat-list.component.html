@@ -1,5 +1,7 @@
 <nb-list>
   <nb-list-item
+    [nbTooltip]="topic.lastMessage"
+    nbTooltipPlacement="right"
     class="px-2"
     [class.active-chat]="topic == topicSelected"
     *ngFor="let topic of topics"
@@ -15,7 +17,7 @@
         <small>
           <span class="text-secondary" [class.font-weight-bold]="topic.unseen">
             {{ topic.updatedBy.fullName + ': ' }}
-            {{ topic.lastMessage || 'has created topic' | textTruncate: 10 }}
+            {{ topic.lastMessage || '' | textTruncate: 10 }}
           </span>
         </small>
       </div>

@@ -29,8 +29,8 @@ public class ChatTopic {
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "topics_participants",
-            joinColumns = @JoinColumn(name = "topic_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "topic_id", insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "user_id", insertable = false, updatable = false)
     )
     private List<User> participants;
 

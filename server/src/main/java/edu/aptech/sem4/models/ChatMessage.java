@@ -30,4 +30,6 @@ public class ChatMessage {
     private User createdBy;
 
     private LocalDateTime createdAt;
+
+    private Boolean isSystem = false;
 }

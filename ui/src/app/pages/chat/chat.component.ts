@@ -107,7 +107,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log(mess);
     for (const k in this.topics) {
       if (this.topics[k].id === mess.topic.id) {
-        this.topics[k].lastMessage = mess.topic.lastMessage;
+        this.topics[k].lastMessage = mess.text;
         this.topics[k].updatedBy = mess.topic.updatedBy;
         this.topics[k].updatedAt = mess.topic.updatedAt;
         this.topics[k].messages.push(mess);
@@ -173,7 +173,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   handleUpdateChatGroupSub(topic: ChatTopic): void {
     for (const k in this.topics) {
       if (this.topics[k].id === topic.id) {
-        this.topics[k] = this.chatService.refactorChatTopic(topic, this.authService.getCredentials().id);
+        this.topics[k].participants = topic.participants;
+        this.topics[k].title = topic.title;
         break;
       }
     }

@@ -43,8 +43,12 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   getParticipantNames(): string {
+    if (!this.topicSelected.isGroup) {
+      return this.topicSelected.participants
+        .find(p => p.id !== this.authService.getCredentials().id)
+        .fullName;
+    }
     return this.topicSelected.participants
-      .filter(p => p.id !== this.authService.getCredentials().id)
       .map(p => p.fullName)
       .reduce((acc, cur) => acc === '' ? cur : acc + ', ' + cur, '');
   }

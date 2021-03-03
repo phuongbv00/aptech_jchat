@@ -1,27 +1,37 @@
 <nb-list class="pb-3 px-3">
   <nb-list-item
     *ngFor="let msg of messages; index as i"
-    class="chat-container d-flex p-0 align-items-end"
-    [class.flex-row-reverse]="isMyChat(msg)"
-    [style.padding-top]="isFirstMessageInAnUserBatch(msg, i) ? (isMyChat(msg) ? '1rem!important' : '2rem!important') : ''">
+    class="d-flex flex-column p-0 align-items-end">
+<!--    normal messages-->
     <div
-      class="avatar-container"
-      *ngIf="!isMyChat(msg)"
-      [style.visibility]="isFirstMessageInAnUserBatch(msg, i) ? 'visible' : 'hidden'">
-      <app-avatar
-        size="36px"
-        [src]="msg.createdBy.avatar"
-      ></app-avatar>
-      <small class="username">{{msg.createdBy.fullName}}</small>
+      *ngIf="!msg.isSystem"
+      class="chat-container d-flex align-items-end"
+      [class.align-self-start]="!isMyChat(msg)"
+      [class.flex-row-reverse]="isMyChat(msg)"
+      [style.padding-top]="isFirstMessageInAnUserBatch(msg, i) ? (isMyChat(msg) ? '1rem!important' : '2rem!important') : ''">
+      <div
+        class="avatar-container"
+        *ngIf="!isMyChat(msg)"
+        [style.visibility]="isFirstMessageInAnUserBatch(msg, i) ? 'visible' : 'hidden'">
+        <app-avatar
+          size="36px"
+          [src]="msg.createdBy.avatar"
+        ></app-avatar>
+        <small class="username">{{msg.createdBy.fullName}}</small>
+      </div>
+      <div
+        [class.my-chat]="isMyChat(msg)"
+        [class.my-first-chat]="isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i)"
+        [class.their-chat]="!isMyChat(msg)"
+        [class.their-last-chat]="!isMyChat(msg) && isLastMessageInAnUserBatch(msg, i)"
+        class="py-2 px-3">
+        {{ msg.text }}
+      </div>
+      <small class="ms-1 me-1 color-basic-600">{{msg.createdAt | localDatetime | date: 'hh:mm'}}</small>
     </div>
-    <div
-      [class.my-chat]="isMyChat(msg)"
-      [class.my-first-chat]="isMyChat(msg) && isFirstMessageInAnUserBatch(msg, i)"
-      [class.their-chat]="!isMyChat(msg)"
-      [class.their-last-chat]="!isMyChat(msg) && isLastMessageInAnUserBatch(msg, i)"
-      class="py-2 px-3">
-      {{ msg.text }}
+<!--    system messages-->
+    <div *ngIf="msg.isSystem" class="align-self-center pt-2">
+      <small class="color-basic-600">{{msg.text}}</small>
     </div>
-    <small class="ms-1 me-1 time">{{msg.createdAt | localDatetime | date: 'hh:mm'}}</small>
   </nb-list-item>
 </nb-list>
