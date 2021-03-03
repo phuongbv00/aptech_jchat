@@ -1,12 +1,48 @@
 <nb-layout-footer>
-    <input (keyup.enter)="onSent()" [(ngModel)]="textMessage" nbInput fullWidth fieldSize="large" placeholder="Chat here" shape="round" />
+  <div class="d-flex gap-1 w-100">
+    <input
+      (keyup.enter)="onSent()"
+      [(ngModel)]="textMessage"
+      nbInput
+      fullWidth
+      fieldSize="large"
+      placeholder="Chat here"
+      shape="round" />
     <button
-        class="ms-2"
-        nbButton
-        size="large"
-        status="success"
-        shape="round"
-        (click)="onSent()" >
-        <nb-icon icon="navigation-2-outline"></nb-icon>
+      nbButton
+      ghost
+      size="large"
+      status="success"
+      shape="round"
+      (click)="onSent()" >
+      <nb-icon icon="navigation-2-outline"></nb-icon>
     </button>
+    <button
+      nbButton
+      ghost
+      size="large"
+      status="success"
+      shape="round"
+      (click)="openImagePicker(imagePicker)">
+      <nb-icon icon="image-outline"></nb-icon>
+    </button>
+  </div>
 </nb-layout-footer>
+
+<ng-template #imagePicker let-ref="dialogRef">
+  <nb-card style="max-width: 90vw">
+    <nb-card-body class="p-3">
+      <div class="image-picker mw-100 position-relative">
+        <input class="position-absolute w-100 h-100" type="file" (change)="pickImage($event)">
+        <img *ngIf="imageSrc" class="w-100 h-100" [src]="imageSrc">
+        <div *ngIf="!imageSrc" class="alias w-100 h-100 d-flex justify-content-center align-items-center">
+          <nb-icon icon="image-outline"></nb-icon>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-center gap-2">
+      <button nbButton status="danger" (click)="ref.close()">Close</button>
+      <button nbButton status="success" (click)="sendImageMessage()">Send</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

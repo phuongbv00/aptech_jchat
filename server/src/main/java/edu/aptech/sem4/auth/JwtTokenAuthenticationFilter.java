@@ -17,11 +17,8 @@ import java.util.Collections;
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
-    private final Logger logger;
-
     public JwtTokenAuthenticationFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
-        this.logger = Logger.getLogger(this.getClass().getName());
     }
 
     @Override
@@ -45,7 +42,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
         // 3. Get the token
         String token = header.replace(jwtProvider.getPrefix(), "");
-        logger.info(token);
         var isValidToken = jwtProvider.validateToken(token);
         if (isValidToken) {
             var credentials = jwtProvider.getCredentials(token);

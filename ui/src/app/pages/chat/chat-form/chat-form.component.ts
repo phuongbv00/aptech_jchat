@@ -1,6 +1,8 @@
 import { EventConstant } from './../../../shared/constants/event.constant';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {NbDialogRef, NbDialogService} from '@nebular/theme';
+import {ChatService} from '../../../shared/services/chat.service';
+import {FileService} from '../../../shared/services/file.service';
 
 @Component({
   selector: 'app-chat-form',
@@ -8,12 +10,16 @@ import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
   styleUrls: ['./chat-form.component.scss']
 })
 export class ChatFormComponent implements OnInit {
-  @Output() sendMessage = new EventEmitter<WebsocketMessage>();
   @Input() topicId: string;
 
   textMessage: string;
+  imageSrc: string;
 
-  constructor() { }
+  imagePickerRef: NbDialogRef<any>;
+
+  constructor(private dialogService: NbDialogService,
+              private chatService: ChatService,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
   }
@@ -22,7 +28,7 @@ export class ChatFormComponent implements OnInit {
     if (!this.textMessage) {
       return;
     }
-    this.sendMessage.emit({
+    this.chatService.send({
       event: EventConstant.SEND_TEXT_CHAT,
       data: new Map([
         ['topicId', this.topicId],
@@ -30,5 +36,31 @@ export class ChatFormComponent implements OnInit {
       ]),
     });
     this.textMessage = '';
+  }
+
+  openImagePicker(imagePicker: TemplateRef<any>): void {
+    this.imagePickerRef = this.dialogService.open(imagePicker);
+  }
+
+  pickImage(event: any): void {
+    if (event.target.files && event.target.files[0]) {
+      this.fileService.upload(event.target.files[0])
+        .subscribe(file => this.imageSrc = file);
+    }
+  }
+
+  sendImageMessage(): void {
+    if (!this.imageSrc) {
+      return;
+    }
+    this.chatService.send({
+      event: EventConstant.SEND_TEXT_CHAT,
+      data: new Map([
+        ['topicId', this.topicId],
+        ['image', this.imageSrc],
+      ]),
+    });
+    this.imageSrc = '';
+    this.imagePickerRef.close();
   }
 }

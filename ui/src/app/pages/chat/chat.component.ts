@@ -181,9 +181,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   // normal func
-  sentChat(mess: WebsocketMessage): void {
-    this.chatService.send(mess);
-  }
 
   onTopicSelected(topic: ChatTopic): void {
     this.topicSelected = topic;

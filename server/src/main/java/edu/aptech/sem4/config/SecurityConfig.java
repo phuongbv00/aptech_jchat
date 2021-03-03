@@ -50,7 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         jwtProvider.getUri(),
-                        "/ws/**"
+                        "/ws/**",
+                        "/api/file/**"
                 ).permitAll()
                 .anyRequest().authenticated();
     }

@@ -109,23 +109,38 @@ public class ChatServiceImpl implements ChatService {
         var topic = chatTopicRepository
                 .findById(Long.valueOf(websocketMessage.getData().get("topicId")))
                 .orElse(null);
-        if (topic != null) {
+        if (topic == null) return;
+        var hasImage = websocketMessage.getData().containsKey("image");
+        if (hasImage) {
+            topic.setLastMessage("sent an image");
+        } else {
             topic.setLastMessage(websocketMessage.getData().get("text"));
-            topic.setUpdatedBy(websocketMessage.getFrom());
-            topic.setUpdatedAt(LocalDateTime.now());
-            topic = chatTopicRepository.save(topic);
-            var chatMess = chatMessageRepository.save(ChatMessage.builder()
-                    .createdBy(websocketMessage.getFrom())
-                    .createdAt(LocalDateTime.now())
-                    .text(websocketMessage.getData().get("text"))
-                    .topic(topic)
-                    .build());
-            for (var participant : topic.getParticipants()) {
-                if (!participant.getId().equals(websocketMessage.getFrom().getId())) {
-                    unseen(topic.getId(), participant.getId());
-                }
-                send(TopicConstant.SEND_TEXT_CHAT, participant.getId().toString(), chatMess);
+        }
+        topic.setUpdatedBy(websocketMessage.getFrom());
+        topic.setUpdatedAt(LocalDateTime.now());
+        topic = chatTopicRepository.save(topic);
+
+        var chatMessageBuilder = ChatMessage.builder()
+                .createdBy(websocketMessage.getFrom())
+                .createdAt(LocalDateTime.now())
+                .topic(topic);
+
+        if (hasImage) {
+            chatMessageBuilder = chatMessageBuilder
+                    .text("sent an image")
+                    .image(websocketMessage.getData().get("image"));
+        } else {
+            chatMessageBuilder = chatMessageBuilder
+                    .text(websocketMessage.getData().get("text"));
+        }
+
+        var chatMess = chatMessageRepository.save(chatMessageBuilder.build());
+
+        for (var participant : topic.getParticipants()) {
+            if (!participant.getId().equals(websocketMessage.getFrom().getId())) {
+                unseen(topic.getId(), participant.getId());
             }
+            send(TopicConstant.SEND_TEXT_CHAT, participant.getId().toString(), chatMess);
         }
     }
 
