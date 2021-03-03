@@ -8,7 +8,7 @@
   <button
     *ngIf="topicSelected.isGroup"
     class="ms-auto" nbButton ghost shape="round"
-    [nbContextMenu]="isMyTopic(topicSelected) ? settings2 : settings1"
+    [nbContextMenu]="isMyTopic(topicSelected) ? creatorSettings : memberSettings"
     nbContextMenuTag="groupChatSettings">
     <nb-icon style="width: 30px; height: 30px;" icon="settings-2-outline"></nb-icon>
   </button>

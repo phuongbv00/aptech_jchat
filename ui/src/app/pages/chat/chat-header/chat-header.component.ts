@@ -13,9 +13,10 @@ export class ChatHeaderComponent implements OnInit {
   @Input() topicSelected: ChatTopic;
   @Output() openEditChatTopicDialog = new EventEmitter<any>();
   @Output() openLeaveChatGroupDialog = new EventEmitter<any>();
+  @Output() openEditChatGroupAvatarDialog = new EventEmitter<any>();
 
-  settings1 = [{title: 'Leave Group'}];
-  settings2 = [{title: 'Edit Group'}, {title: 'Leave Group'}];
+  memberSettings = [{title: 'Edit Avatar'}, {title: 'Leave Group'}];
+  creatorSettings = [{title: 'Edit Group'}, ...this.memberSettings];
 
   constructor(private authService: AuthService,
               private menuService: NbMenuService) { }
@@ -28,10 +29,13 @@ export class ChatHeaderComponent implements OnInit {
       )
       .subscribe(title => {
         switch (title) {
-          case 'Edit Group':
+          case this.creatorSettings[0].title:
             this.openEditChatTopicDialog.emit();
             break;
-          case 'Leave Group':
+          case this.memberSettings[0].title:
+            this.openEditChatGroupAvatarDialog.emit();
+            break;
+          case this.memberSettings[1].title:
             this.openLeaveChatGroupDialog.emit();
             break;
         }

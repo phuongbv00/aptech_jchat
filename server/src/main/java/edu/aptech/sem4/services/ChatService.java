@@ -13,4 +13,5 @@ public interface ChatService {
     void handleChatSeenMessage(WebsocketMessage websocketMessage);
     void handleUpdateChatGroupMessage(WebsocketMessage websocketMessage);
     void handleLeaveChatGroupMessage(WebsocketMessage websocketMessage);
+    void handleChangeChatGroupAvatar(WebsocketMessage msg);
 }

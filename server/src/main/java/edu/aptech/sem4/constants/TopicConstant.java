@@ -10,4 +10,5 @@ public class TopicConstant {
     public static final String CHAT_SEEN = "/topic/chat/seen";
     public static final String UPDATE_CHAT_GROUP = "/topic/chat/update_chat_group";
     public static final String REMOVE_CHAT_GROUP = "/topic/chat/remove_chat_group";
+    public static final String CHANGE_CHAT_GROUP_AVATAR = "/topic/chat/change_chat_group_avatar";
 }

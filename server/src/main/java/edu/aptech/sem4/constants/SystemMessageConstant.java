@@ -7,4 +7,5 @@ public class SystemMessageConstant {
     public static final String LEAVE_CHAT_GROUP = "${creator} has left group";
     public static final String ADD_MEMBER_CHAT_GROUP = "${members} has been added";
     public static final String REMOVE_MEMBER_CHAT_GROUP = "${members} has been removed";
+    public static final String CHANGE_CHAT_GROUP_AVATAR = "${creator} changed group's avatar";
 }

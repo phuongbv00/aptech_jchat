@@ -9,4 +9,5 @@ public class EventConstant {
     public static final String CHAT_SEEN = "CHAT_SEEN";
     public static final String UPDATE_CHAT_GROUP = "UPDATE_CHAT_GROUP";
     public static final String LEAVE_CHAT_GROUP = "LEAVE_CHAT_GROUP";
+    public static final String CHANGE_CHAT_GROUP_AVATAR = "CHANGE_CHAT_GROUP_AVATAR";
 }

@@ -8,4 +8,5 @@ export class TopicConstant {
   static CHAT_SEEN = '/topic/chat/seen';
   static UPDATE_CHAT_GROUP = '/topic/chat/update_chat_group';
   static REMOVE_CHAT_GROUP = '/topic/chat/remove_chat_group';
+  static CHANGE_CHAT_GROUP_AVATAR = '/topic/chat/change_chat_group_avatar';
 }

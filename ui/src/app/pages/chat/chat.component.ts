@@ -5,7 +5,6 @@ import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message } from '@stomp/stompjs';
-import { WebsocketMessage } from 'src/app/shared/dto/websocket-message.dto';
 import {ChatService} from '../../shared/services/chat.service';
 import {map} from 'rxjs/operators';
 import {NbDialogRef, NbDialogService, NbToastrService} from '@nebular/theme';
@@ -27,6 +26,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   searchedUsers: Pageable<User>;
 
   leaveChatGroupDialogRef: NbDialogRef<any>;
+  editChatGroupAvatarDialogRef: NbDialogRef<any>;
+
+  avatar2Update: string;
 
   // subscriptions
   private exceptionSub: Subscription;
@@ -38,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private chatSeenSub: Subscription;
   private removeChatGroupSub: Subscription;
   private updateChatGroupSub: Subscription;
+  private updateChatGroupAvatarSub: Subscription;
 
   constructor(private rxStompService: RxStompService,
               private chatService: ChatService,
@@ -76,6 +79,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.updateChatGroupSub = this.rxStompService
       .watch(`${TopicConstant.UPDATE_CHAT_GROUP}/${this.authService.getCredentials().id}`)
       .subscribe((message: Message) => this.handleUpdateChatGroupSub(JSON.parse(message.body)));
+    this.updateChatGroupAvatarSub = this.rxStompService
+      .watch(`${TopicConstant.CHANGE_CHAT_GROUP_AVATAR}/${this.authService.getCredentials().id}`)
+      .subscribe((message: Message) => this.handleUpdateChatGroupAvatarSub(JSON.parse(message.body)));
   }
 
   ngOnInit(): void {
@@ -95,6 +101,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatSeenSub.unsubscribe();
     this.removeChatGroupSub.unsubscribe();
     this.updateChatGroupSub.unsubscribe();
+    this.updateChatGroupAvatarSub.unsubscribe();
   }
 
   // handle subscriptions
@@ -180,6 +187,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleUpdateChatGroupAvatarSub(topic: ChatTopic): void {
+    for (const k in this.topics) {
+      if (this.topics[k].id === topic.id) {
+        this.topics[k].avatar = topic.avatar;
+        break;
+      }
+    }
+  }
+
   // normal func
 
   onTopicSelected(topic: ChatTopic): void {
@@ -234,5 +250,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   openLeaveChatGroupDialog(ref: TemplateRef<any>): void {
     this.leaveChatGroupDialogRef = this.dialogService.open(ref);
+  }
+
+  openEditChatGroupAvatarDialog(ref: TemplateRef<any>): void {
+    this.editChatGroupAvatarDialogRef = this.dialogService.open(ref);
+  }
+
+  editGroupAvatar(): void {
+    this.chatService.send({
+      event: EventConstant.CHANGE_CHAT_GROUP_AVATAR,
+      data: new Map([
+        ['topicId', this.topicSelected.id.toString()],
+        ['avatar', this.avatar2Update],
+      ]),
+    });
+    this.editChatGroupAvatarDialogRef.close();
   }
 }

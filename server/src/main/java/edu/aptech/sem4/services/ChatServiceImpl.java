@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.Topic;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -416,5 +417,25 @@ public class ChatServiceImpl implements ChatService {
         }
 
         send(TopicConstant.REMOVE_CHAT_GROUP, websocketMessage.getFrom().getId().toString(), topic);
+    }
+
+    @Override
+    public void handleChangeChatGroupAvatar(WebsocketMessage websocketMessage) {
+        var data = websocketMessage.getData();
+        var topic = chatTopicRepository.findById(Long.valueOf(data.get("topicId"))).orElse(null);
+        if (topic == null) return;
+        topic.setAvatar(data.containsKey("avatar") ? data.get("avatar") : null);
+        topic = chatTopicRepository.save(topic);
+
+        var sysMess = createSysMess(topic, SystemMessageConstant.CHANGE_CHAT_GROUP_AVATAR, websocketMessage.getFrom(), null);
+        sysMess = chatMessageRepository.save(sysMess);
+
+        topic.setLastMessage(sysMess.getText());
+        topic = chatTopicRepository.save(topic);
+
+        for (var p: topic.getParticipants()) {
+            send(TopicConstant.CHANGE_CHAT_GROUP_AVATAR, p.getId().toString(), topic);
+            send(TopicConstant.SEND_TEXT_CHAT, p.getId().toString(), sysMess);
+        }
     }
 }

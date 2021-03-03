@@ -49,6 +49,9 @@ public class WebSocketController {
             case EventConstant.LEAVE_CHAT_GROUP:
                 chatService.handleLeaveChatGroupMessage(msg);
                 break;
+            case EventConstant.CHANGE_CHAT_GROUP_AVATAR:
+                chatService.handleChangeChatGroupAvatar(msg);
+                break;
             default:
                 break;
         }

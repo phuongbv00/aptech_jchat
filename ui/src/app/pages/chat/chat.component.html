@@ -16,6 +16,7 @@
         [topicSelected]="topicSelected"
         (openEditChatTopicDialog)="dialogService.open(editChatTopicDialog)"
         (openLeaveChatGroupDialog)="openLeaveChatGroupDialog(leaveGroupDialog)"
+        (openEditChatGroupAvatarDialog)="openEditChatGroupAvatarDialog(editChatGroupAvatarDialog)"
       ></app-chat-header>
       <app-chat-box
         class="bg-white h-100 overflow-auto"
@@ -56,6 +57,22 @@
     <nb-card-footer class="d-flex gap-2 justify-content-center">
       <button nbButton (click)="ref.close()">No</button>
       <button nbButton status="danger" (click)="leaveChatGroup()">Yes</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #editChatGroupAvatarDialog let-ref="dialogRef">
+  <nb-card accent="success">
+    <nb-card-footer>Edit Group Avatar</nb-card-footer>
+    <nb-card-body>
+      <app-image-picker
+        [initSrc]="topicSelected.avatar"
+        (imageChange)="avatar2Update = $event">
+      </app-image-picker>
+    </nb-card-body>
+    <nb-card-footer class="d-flex gap-2 justify-content-center">
+      <button nbButton (click)="ref.close()">Close</button>
+      <button nbButton status="danger" (click)="editGroupAvatar()">Submit</button>
     </nb-card-footer>
   </nb-card>
 </ng-template>

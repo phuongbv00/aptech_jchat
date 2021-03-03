@@ -7,4 +7,5 @@ export class EventConstant {
   static CHAT_SEEN = 'CHAT_SEEN';
   static UPDATE_CHAT_GROUP = 'UPDATE_CHAT_GROUP';
   static LEAVE_CHAT_GROUP = 'LEAVE_CHAT_GROUP';
+  static CHANGE_CHAT_GROUP_AVATAR = 'CHANGE_CHAT_GROUP_AVATAR';
 }
