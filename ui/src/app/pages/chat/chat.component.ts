@@ -49,7 +49,11 @@ export class ChatComponent implements OnInit, OnDestroy {
               private toastrService: NbToastrService) {
     this.authService.getToken()
       .pipe(map(token => token.getPayload()))
-      .subscribe(payload => this.authService.saveCredentials(payload.credentials));
+      .subscribe(payload => {
+        if (!this.authService.getCredentials()) {
+          this.authService.saveCredentials(payload.credentials);
+        }
+      });
 
     // register subscriptions
     this.sendTextChatSub = this.rxStompService

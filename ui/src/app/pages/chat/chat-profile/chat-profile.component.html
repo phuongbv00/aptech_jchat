@@ -1,5 +1,5 @@
 <div class="profile-container pt-2 px-2 d-flex align-items-center">
-  <div class="d-flex justify-content-center align-items-center pb-3 flex-wrap">
+  <div class="d-flex justify-content-center align-items-center pb-3 flex-wrap" (click)="dialogService.open(updateAvatarDialog)">
     <app-avatar
       [src]="profile.avatar"
       size="36px"
@@ -7,7 +7,7 @@
     <b class="px-2 text-center">{{profile.fullName | textTruncate: 20}}</b>
   </div>
   <div class="ms-auto d-flex gap-2 flex-wrap pb-3 justify-content-center">
-    <button nbButton status="warning" size="small" shape="round">
+    <button nbButton status="warning" size="small" shape="round" (click)="dialogService.open(updateAvatarDialog)">
       <nb-icon icon="edit-outline"></nb-icon>
     </button>
     <button nbButton status="danger" size="small" shape="round" (click)="logout()">
@@ -18,3 +18,17 @@
     </button>
   </div>
 </div>
+
+<ng-template #updateAvatarDialog let-ref="dialogRef">
+  <nb-card accent="success">
+    <nb-card-header>Profile</nb-card-header>
+    <nb-card-body>
+      <app-image-picker
+        [initSrc]="profile.avatar"
+        (imageChange)="updateAvatar($event)"
+        width="200px"
+        height="200px"
+      ></app-image-picker>
+    </nb-card-body>
+  </nb-card>
+</ng-template>

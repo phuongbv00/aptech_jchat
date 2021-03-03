@@ -2,6 +2,8 @@ package edu.aptech.sem4.controller;
 
 import edu.aptech.sem4.auth.AuthBasicLoginParams;
 import edu.aptech.sem4.auth.AuthRegisterParams;
+import edu.aptech.sem4.models.User;
+import edu.aptech.sem4.repositories.UserRepository;
 import edu.aptech.sem4.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     AuthService authService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("login")
     public Object login(@RequestBody AuthBasicLoginParams params) {
@@ -28,5 +33,12 @@ public class AuthController {
     @DeleteMapping("logout")
     public void logout() {
         
+    }
+
+    @PutMapping("avatar")
+    public User updateAvatar(@RequestParam String avatar, @RequestParam Long id) {
+        var u = userRepository.findById(id).orElse(null);
+        u.setAvatar(avatar);
+        return userRepository.save(u);
     }
 }
