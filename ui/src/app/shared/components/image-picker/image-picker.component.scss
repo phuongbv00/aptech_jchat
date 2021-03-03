@@ -1,0 +1,24 @@
+@import "src/themes";
+
+.image-picker {
+  input {
+    :focus {
+      outline: none;
+    }
+    opacity: 0;
+  }
+
+  img {
+    object-fit: cover;
+  }
+
+  .alias {
+    border: 3px solid nb-theme(color-basic-600);
+    border-radius: 0.25rem;
+  }
+
+  nb-icon {
+    font-size: 2rem;
+    color: nb-theme(color-basic-600);
+  }
+}

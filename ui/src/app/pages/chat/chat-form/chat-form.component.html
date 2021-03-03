@@ -32,13 +32,9 @@
 <ng-template #imagePicker let-ref="dialogRef">
   <nb-card style="max-width: 90vw">
     <nb-card-body class="p-3">
-      <div class="image-picker mw-100 position-relative">
-        <input class="position-absolute w-100 h-100" type="file" (change)="pickImage($event)">
-        <img *ngIf="imageSrc" class="w-100 h-100" [src]="imageSrc">
-        <div *ngIf="!imageSrc" class="alias w-100 h-100 d-flex justify-content-center align-items-center">
-          <nb-icon icon="image-outline"></nb-icon>
-        </div>
-      </div>
+      <app-image-picker
+        (imageChange)="imageSrc = $event"
+      ></app-image-picker>
     </nb-card-body>
     <nb-card-footer class="d-flex justify-content-center gap-2">
       <button nbButton status="danger" (click)="ref.close()">Close</button>

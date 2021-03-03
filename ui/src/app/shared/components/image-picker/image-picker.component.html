@@ -1,0 +1,7 @@
+<div class="image-picker mw-100 position-relative" [style.width]="width" [style.height]="height">
+  <input class="position-absolute w-100 h-100" type="file" (change)="pickImage($event)">
+  <img *ngIf="imageSrc" class="w-100 h-100" [src]="imageSrc">
+  <div *ngIf="!imageSrc" class="alias w-100 h-100 d-flex justify-content-center align-items-center">
+    <nb-icon icon="image-outline"></nb-icon>
+  </div>
+</div>

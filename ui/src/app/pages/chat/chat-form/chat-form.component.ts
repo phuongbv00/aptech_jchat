@@ -18,8 +18,7 @@ export class ChatFormComponent implements OnInit {
   imagePickerRef: NbDialogRef<any>;
 
   constructor(private dialogService: NbDialogService,
-              private chatService: ChatService,
-              private fileService: FileService) { }
+              private chatService: ChatService) { }
 
   ngOnInit(): void {
   }
@@ -40,13 +39,6 @@ export class ChatFormComponent implements OnInit {
 
   openImagePicker(imagePicker: TemplateRef<any>): void {
     this.imagePickerRef = this.dialogService.open(imagePicker);
-  }
-
-  pickImage(event: any): void {
-    if (event.target.files && event.target.files[0]) {
-      this.fileService.upload(event.target.files[0])
-        .subscribe(file => this.imageSrc = file);
-    }
   }
 
   sendImageMessage(): void {
