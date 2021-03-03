@@ -20,8 +20,6 @@ public class JwtProvider {
     private final int expiration = 24*60*60*1000;
     private final String secret = "jalskdjlakjdlkajsdlkjsalkdjsalkdjlksajdlksajdlksajdlkjsalkdjaslkdjlksajdlksajdl";
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
-
     public String generateToken(User credentials) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
@@ -40,7 +38,6 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
         var credentials = new ObjectMapper().convertValue(claims.get("credentials"), User.class);
-        logger.info(credentials.toString());
         return credentials;
     }
 
@@ -49,15 +46,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
         return false;
     }
