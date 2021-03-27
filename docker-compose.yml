@@ -17,24 +17,24 @@ services:
       - 6379:6379
     volumes:
       - ./docker/volumes/redis:/data
-#  server:
-#    build: ./server
-#    ports:
-#      - 8000:8000
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sem4_db
-#      - SPRING_DATASOURCE_USERNAME=root
-#      - SPRING_DATASOURCE_PASSWORD=root@123
-#      - SPRING_REDIS_HOST=redis
-#    volumes:
-#      - ./docker/volumes/server/uploads:/uploads
-#    depends_on:
-#      - db
-#      - redis
-#  ui:
-#    build: ./ui
-#    ports:
-#      - 8080:80
-#    environment:
-#      - WS_ENDPOINT=ws://server:8000/ws
-#      - API_ENDPOINT=http://server:8000/api
+  server:
+    build: ./server
+    ports:
+      - 8000:8000
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/sem4_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root@123
+      - SPRING_REDIS_HOST=redis
+    volumes:
+      - ./docker/volumes/server/uploads:/uploads
+    depends_on:
+      - db
+      - redis
+  ui:
+    build: ./ui
+    ports:
+      - 80:80
+    environment:
+      - WS_ENDPOINT=ws://server:8000/ws
+      - API_ENDPOINT=http://server:8000/api

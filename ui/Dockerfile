@@ -15,7 +15,6 @@ RUN ng build --configuration production --output-path=/dist
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /dist /usr/share/nginx/html
-RUN echo "mainFileName=\"\$(ls /usr/share/nginx/html/main*.js)\" && \
-          envsubst '\$WS_ENDPOINT \$API_ENDPOINT ' < \${mainFileName} > main.tmp && \
-          mv main.tmp  \${mainFileName} && nginx -g 'daemon off;'" > run.sh
-ENTRYPOINT ["sh", "run.sh"]
+
+# When the container starts, replace the env.template.js with values from environment variables
+CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/assets/env.template.js > /usr/share/nginx/html/assets/env.template.js && exec nginx -g 'daemon off;'"]
