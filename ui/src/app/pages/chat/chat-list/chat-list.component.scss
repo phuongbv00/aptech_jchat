@@ -10,8 +10,16 @@
 }
 
 @media (max-width: 425px) {
+  .item-wrapper {
+    justify-content: center!important;
+  }
+
   .can-be-collapsed {
     display: none!important;
+  }
+
+  .can-be-collapsed-reverse {
+    display: block!important;
   }
 }
 

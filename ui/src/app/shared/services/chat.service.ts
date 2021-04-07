@@ -50,6 +50,7 @@ export class ChatService {
     if (!isGroup) {
       const opponent = topic.participants.find(u => u.id !== myId);
       rs.title = opponent.fullName;
+      rs.avatar = opponent.avatar;
     }
     return rs;
   }

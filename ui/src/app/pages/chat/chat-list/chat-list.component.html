@@ -1,17 +1,18 @@
 <nb-list>
   <nb-list-item
-    [nbTooltip]="topic.lastMessage"
+    [nbTooltip]="topic.title"
     nbTooltipPlacement="right"
     class="px-2"
     [class.active-chat]="topic == topicSelected"
     *ngFor="let topic of topics"
     (click)="onTopicSelected(topic)"
     [style.border-radius]="'0.5rem'">
-    <div class="d-flex align-items-center w-100">
+    <div class="item-wrapper d-flex align-items-center w-100 position-relative">
       <app-avatar
         [src]="topic.avatar"
         [isGroup]="topic.isGroup"
         size="50px"></app-avatar>
+      <nb-badge *ngIf="topic.unseen" class="d-none can-be-collapsed-reverse" dotMode status="danger"></nb-badge>
       <div class="can-be-collapsed d-flex flex-column ps-2 pe-3 flex-grow-1">
         <span [class.font-weight-bold]="topic.unseen">{{ topic.title | textTruncate: 25 }}</span>
         <small>
