@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  wsEndpoint: window['env']['wsEndpoint'] || 'ws://localhost:8000/ws',
-  apiEndpoint: window['env']['apiEndpoint'] || 'http://localhost:8000/api',
+  wsEndpoint: 'ws://20.198.99.49:8000/ws',
+  apiEndpoint: 'http://20.198.99.49:8000/api',
 };
