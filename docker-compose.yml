@@ -7,16 +7,16 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root@123
     ports:
-      - 3306:3306
+      - 33060:3306
     volumes:
-      - ./docker/volumes/mysql:/var/lib/mysql
+      - db:/var/lib/mysql
   redis:
     image: redis
     command: redis-server --appendonly yes
     ports:
-      - 6379:6379
+      - 63790:6379
     volumes:
-      - ./docker/volumes/redis:/data
+      - redis:/data
   server:
     build: ./server
     ports:
@@ -27,14 +27,18 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root@123
       - SPRING_REDIS_HOST=redis
     volumes:
-      - ./docker/volumes/server/uploads:/uploads
+      - server:/uploads
     depends_on:
       - db
       - redis
   ui:
     build: ./ui
     ports:
-      - 80:80
+      - 88:80
     environment:
       - WS_ENDPOINT=ws://server:8000/ws
       - API_ENDPOINT=http://server:8000/api
+volumes:
+  db:
+  redis:
+  server:
