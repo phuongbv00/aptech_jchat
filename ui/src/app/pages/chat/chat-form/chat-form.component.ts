@@ -13,12 +13,13 @@ export class ChatFormComponent implements OnInit {
   @Input() topicId: string;
 
   textMessage: string;
-  imageSrc: string;
+  imageSrc: File;
 
   imagePickerRef: NbDialogRef<any>;
 
   constructor(private dialogService: NbDialogService,
-              private chatService: ChatService) { }
+              private chatService: ChatService,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
   }
@@ -45,14 +46,17 @@ export class ChatFormComponent implements OnInit {
     if (!this.imageSrc) {
       return;
     }
-    this.chatService.send({
-      event: EventConstant.SEND_TEXT_CHAT,
-      data: new Map([
-        ['topicId', this.topicId],
-        ['image', this.imageSrc],
-      ]),
-    });
-    this.imageSrc = '';
-    this.imagePickerRef.close();
+    this.fileService.upload(this.imageSrc)
+      .subscribe(filename => {
+        this.chatService.send({
+          event: EventConstant.SEND_TEXT_CHAT,
+          data: new Map([
+            ['topicId', this.topicId],
+            ['image', filename],
+          ]),
+        });
+        this.imageSrc = null;
+        this.imagePickerRef.close();
+      });
   }
 }

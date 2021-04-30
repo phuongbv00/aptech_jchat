@@ -6,6 +6,7 @@ import {User} from '../../../shared/models/user.model';
 import {environment} from '../../../../environments/environment';
 import set = Reflect.set;
 import {NbDialogService, NbToastrService} from '@nebular/theme';
+import {FileService} from '../../../shared/services/file.service';
 
 @Component({
   selector: 'app-chat-profile',
@@ -21,7 +22,8 @@ export class ChatProfileComponent implements OnInit {
               private router: Router,
               private http: HttpClient,
               public dialogService: NbDialogService,
-              private toastrService: NbToastrService) { }
+              private toastrService: NbToastrService,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
     this.profile = this.authService.getCredentials();
@@ -34,17 +36,20 @@ export class ChatProfileComponent implements OnInit {
       });
   }
 
-  updateAvatar(avatar: string): void {
-    const params = new HttpParams()
-      .set('id', this.profile.id)
-      .set('avatar', avatar);
-    this.http.put<User>(`${environment.apiEndpoint}/auth/avatar`, null, {params})
-      .subscribe(
-        res => {
-          this.profile.avatar = res.avatar;
-          this.authService.saveCredentials(this.profile);
-          this.toastrService.success('Update avatar successfully', 'Update profile');
-        },
-        error => this.toastrService.danger('Somethings went wrong', 'Update profile'));
+  updateAvatar(file: File): void {
+    this.fileService.upload(file)
+      .subscribe(avatar => {
+        const params = new HttpParams()
+          .set('id', this.profile.id)
+          .set('avatar', avatar);
+        this.http.put<User>(`${environment.apiEndpoint}/auth/avatar`, null, {params})
+          .subscribe(
+            res => {
+              this.profile.avatar = res.avatar;
+              this.authService.saveCredentials(this.profile);
+              this.toastrService.success('Update avatar successfully', 'Update profile');
+            },
+            error => this.toastrService.danger('Somethings went wrong', 'Update profile'));
+      });
   }
 }

@@ -10,11 +10,11 @@ export class ImagePickerComponent implements OnInit {
   @Input() initSrc: string;
   @Input() width = '425px';
   @Input() height = '250px';
-  @Output() imageChange = new EventEmitter<string>();
+  @Output() imageChange = new EventEmitter<File>();
 
-  imageSrc: string;
+  imageSrc: string | ArrayBuffer;
 
-  constructor(private fileService: FileService) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.imageSrc = this.initSrc;
@@ -22,11 +22,10 @@ export class ImagePickerComponent implements OnInit {
 
   pickImage(event: any): void {
     if (event.target.files && event.target.files[0]) {
-      this.fileService.upload(event.target.files[0])
-        .subscribe(file => {
-          this.imageSrc = file;
-          this.imageChange.emit(file);
-        });
+      const reader = new FileReader();
+      reader.onload = e => this.imageSrc = e.target.result;
+      reader.readAsDataURL(event.target.files[0]);
+      this.imageChange.emit(event.target.files[0]);
     }
   }
 }

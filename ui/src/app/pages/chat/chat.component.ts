@@ -12,6 +12,7 @@ import {Pageable} from '../../shared/dto/pageable.dto';
 import {User} from '../../shared/models/user.model';
 import {EventConstant} from '../../shared/constants/event.constant';
 import {AuthService} from '../../shared/services/auth.service';
+import {FileService} from '../../shared/services/file.service';
 
 const MAX_CHAT_HISTORY = 20;
 
@@ -28,7 +29,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   leaveChatGroupDialogRef: NbDialogRef<any>;
   editChatGroupAvatarDialogRef: NbDialogRef<any>;
 
-  avatar2Update: string;
+  avatar2Update: File;
 
   // subscriptions
   private exceptionSub: Subscription;
@@ -46,7 +47,8 @@ export class ChatComponent implements OnInit, OnDestroy {
               private chatService: ChatService,
               private authService: AuthService,
               public dialogService: NbDialogService,
-              private toastrService: NbToastrService) {
+              private toastrService: NbToastrService,
+              private fileService: FileService) {
     this.authService.getToken()
       .pipe(map(token => token.getPayload()))
       .subscribe(payload => {
@@ -261,13 +263,16 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   editGroupAvatar(): void {
-    this.chatService.send({
-      event: EventConstant.CHANGE_CHAT_GROUP_AVATAR,
-      data: new Map([
-        ['topicId', this.topicSelected.id.toString()],
-        ['avatar', this.avatar2Update],
-      ]),
-    });
-    this.editChatGroupAvatarDialogRef.close();
+    this.fileService.upload(this.avatar2Update)
+      .subscribe(avatar => {
+        this.chatService.send({
+          event: EventConstant.CHANGE_CHAT_GROUP_AVATAR,
+          data: new Map([
+            ['topicId', this.topicSelected.id.toString()],
+            ['avatar', avatar],
+          ]),
+        });
+        this.editChatGroupAvatarDialogRef.close();
+      });
   }
 }
