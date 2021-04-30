@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  wsEndpoint: 'ws://20.198.102.32:8000/ws',
-  apiEndpoint: 'http://20.198.102.32:8000/api',
+  wsEndpoint: 'ws://127.0.0.1:8000/ws',
+  apiEndpoint: 'http://127.0.0.1:8000/api',
 };
 
 /*

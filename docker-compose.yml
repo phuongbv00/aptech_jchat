@@ -31,13 +31,10 @@ services:
     depends_on:
       - db
       - redis
-  ui:
-    build: ./ui
-    ports:
-      - 88:80
-    environment:
-      - WS_ENDPOINT=ws://server:8000/ws
-      - API_ENDPOINT=http://server:8000/api
+#  ui:
+#    build: ./ui
+#    ports:
+#      - 88:80
 volumes:
   db:
   redis:
