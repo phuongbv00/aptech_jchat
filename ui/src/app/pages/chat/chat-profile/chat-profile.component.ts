@@ -4,7 +4,6 @@ import {Router} from '@angular/router';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {User} from '../../../shared/models/user.model';
 import {environment} from '../../../../environments/environment';
-import set = Reflect.set;
 import {NbDialogService, NbToastrService} from '@nebular/theme';
 import {FileService} from '../../../shared/services/file.service';
 
@@ -49,7 +48,21 @@ export class ChatProfileComponent implements OnInit {
               this.authService.saveCredentials(this.profile);
               this.toastrService.success('Update avatar successfully', 'Update profile');
             },
-            error => this.toastrService.danger('Somethings went wrong', 'Update profile'));
-      });
+            error => this.toastrService.danger('Somethings went wrong', 'Update avatar'));
+      }, error => this.toastrService.danger('Somethings went wrong', 'Update avatar'));
+  }
+
+  updateProfile(): void {
+    const params = new HttpParams()
+      .set('id', this.profile.id)
+      .set('fullName', this.profile.fullName);
+    this.http.put<User>(`${environment.apiEndpoint}/auth/profile`, null, {params})
+      .subscribe(
+        res => {
+          this.profile.fullName = res.fullName;
+          this.authService.saveCredentials(this.profile);
+          this.toastrService.success('Update profile successfully', 'Update profile');
+        },
+        error => this.toastrService.danger('Somethings went wrong', 'Update profile'));
   }
 }

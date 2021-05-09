@@ -22,13 +22,17 @@
 <ng-template #updateAvatarDialog let-ref="dialogRef">
   <nb-card accent="success">
     <nb-card-header>Profile</nb-card-header>
-    <nb-card-body>
+    <nb-card-body class="d-flex flex-column align-items-center">
       <app-image-picker
         [initSrc]="profile.avatar"
         (imageChange)="updateAvatar($event)"
         width="200px"
         height="200px"
       ></app-image-picker>
+      <input class="mt-3" nbInput placeholder="Full name" [(ngModel)]="profile.fullName">
     </nb-card-body>
+    <nb-card-footer class="d-flex justify-content-center">
+      <button nbButton status="success" (click)="updateProfile()">Save</button>
+    </nb-card-footer>
   </nb-card>
 </ng-template>

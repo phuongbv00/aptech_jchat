@@ -52,7 +52,7 @@
 <ng-template #leaveGroupDialog let-ref="dialogRef">
   <nb-card accent="danger">
     <nb-card-header>
-      Are you sure want to leave the group ?
+      Are you sure to leave this group ?
     </nb-card-header>
     <nb-card-footer class="d-flex gap-2 justify-content-center">
       <button nbButton (click)="ref.close()">No</button>
@@ -63,7 +63,7 @@
 
 <ng-template #editChatGroupAvatarDialog let-ref="dialogRef">
   <nb-card accent="success">
-    <nb-card-footer>Edit Group Avatar</nb-card-footer>
+    <nb-card-header>Edit Group Avatar</nb-card-header>
     <nb-card-body>
       <app-image-picker
         [initSrc]="topicSelected.avatar"

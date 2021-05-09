@@ -41,4 +41,11 @@ public class AuthController {
         u.setAvatar(avatar);
         return userRepository.save(u);
     }
+
+    @PutMapping("profile")
+    public User updateProfile(@RequestParam String fullName, @RequestParam Long id) {
+        var u = userRepository.findById(id).orElse(null);
+        u.setFullName(fullName);
+        return userRepository.save(u);
+    }
 }
