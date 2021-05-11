@@ -31,10 +31,10 @@ services:
     depends_on:
       - db
       - redis
-#  ui:
-#    build: ./ui
-#    ports:
-#      - 88:80
+  ui:
+    build: ./ui
+    ports:
+      - 88:80
 volumes:
   db:
   redis:
